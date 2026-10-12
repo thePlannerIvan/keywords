@@ -474,9 +474,11 @@
       overflow: hidden;
     }
 
-    .stage-content img {
+    .stage-content img,
+    .stage-content svg {
       max-width: 100%;
-      max-height: 100%;
+      height: auto;
+      max-height: 380px;
       object-fit: contain;
       border-radius: var(--dsw-radius-xs);
     }
@@ -1304,6 +1306,28 @@
       if (options.focus !== false) focusTreeNode(nodeId);
     }
 
+    function getVisualNodes() {
+      const nodes = [];
+      function collect(node) {
+        nodes.push(node);
+        (node.children || []).forEach(collect);
+      }
+      collect(rootNode);
+      return nodes;
+    }
+
+    function findVerticalNode(node, direction) {
+      const visualNodes = getVisualNodes().sort((a, b) => {
+        const yDelta = (a.y + a.height / 2) - (b.y + b.height / 2);
+        if (Math.abs(yDelta) > 0.5) return yDelta;
+        return a.x - b.x;
+      });
+      const index = visualNodes.findIndex(candidate => candidate.id === node.id);
+      if (index < 0) return null;
+      const targetIndex = direction === 'down' ? index + 1 : index - 1;
+      return visualNodes[targetIndex] || null;
+    }
+
     function moveNodeFocus(nodeId, key) {
       const node = treeNodeMap.get(nodeId);
       if (!node) return;
@@ -1313,11 +1337,8 @@
         target = parent;
       } else if (key === 'ArrowRight') {
         target = (node.children || [])[0] || null;
-      } else if (parent) {
-        const siblings = parent.children || [];
-        const index = siblings.findIndex(item => item.id === nodeId);
-        const nextIndex = key === 'ArrowUp' ? index - 1 : index + 1;
-        target = siblings[nextIndex] || null;
+      } else if (key === 'ArrowUp' || key === 'ArrowDown') {
+        target = findVerticalNode(node, key === 'ArrowDown' ? 'down' : 'up');
       }
       if (target) selectTreeNode(target.id, { focus: true });
     }
@@ -1331,10 +1352,10 @@
       document.getElementById('atlas-stats').textContent = `${keywordNodes.length} 个杠杆词`;
       document.getElementById('ins-title').textContent = node.label;
       document.getElementById('ins-why').textContent = node.summary || '从这里沿箭头进入下一层概念。';
-      document.getElementById('ins-distinction').textContent = '用方向键左右进入层级，上下切换同层节点。';
+      document.getElementById('ins-distinction').textContent = '用方向键左右进入层级，上下沿画布纵向节点移动。';
       const cueList = document.getElementById('ins-cues');
       cueList.innerHTML = '';
-      ['右方向键进入下一级', '上下方向键切换同层节点', '选中后右侧说明会同步更新'].forEach(cue => {
+      ['右方向键进入下一级', '上下方向键沿画布顺序移动', '选中后右侧说明会同步更新'].forEach(cue => {
         const li = document.createElement('li');
         li.textContent = cue;
         cueList.appendChild(li);

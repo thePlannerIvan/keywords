@@ -19,8 +19,10 @@ Use the least elaborate representation that makes the intended difference obviou
 - The UI follows DSH design tokens (`/*__DSH_TOKENS__*/` inlined from `planners-review-core`) and supports both dark and light modes.
 - The template maintains a bare `{{REVIEW_BRIDGE}}` placeholder to run both in the DSH sidebar iframe and in standalone browsers.
 - Clicking a node opens an inspection slide-over drawer:
+  - The inspector stage provides an adaptive display container calibrated to a 360px base width, expanding naturally in height (up to ~380px max height);
+  - Each concept visual must be an independent micro-card authored for this 360px base width (SVGs declare `viewBox="0 0 360 [height]"` with 16:9, 1:1, or 9:16 ratios), never a composite multi-concept poster;
   - Motion concepts render a live HTML/CSS sandbox with a replay controller;
-  - Style/image concepts render high-fidelity galleries/images;
+  - Style/image concepts render high-fidelity cropped examples;
   - Diagrams render vector overlays;
   - Every concept features an actionable one-click Prompt box.
 - The interface strictly follows DSH technical minimalism: no unnecessary engineering logs or audit dumps in the primary view.

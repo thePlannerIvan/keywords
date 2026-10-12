@@ -61,3 +61,24 @@
   - Added tree-aware arrow navigation: left/right moves to parent/first child, up/down moves between same-level siblings; focus and Inspector follow the selected node.
   - Added accessible selected-state updates and branch/root Inspector states so keyboard navigation remains legible at every tree level.
 - Validation: JavaScript parse, atlas validation, browser keyboard navigation for child/sibling/parent movement, standalone marker check, and responsive Viewer regression.
+
+## 2026-10-12: Complete Data Contract, Mandatory Discovery Gates & Adaptive Base Viewport
+
+- Trigger: user feedback identifying 3 key gaps:
+  1. Missing explicit field-by-field schema specification for `atlas.json` data handoff;
+  2. Need for mandatory enforcement of `/wayfinder` and `/research` as non-negotiable prerequisite steps;
+  3. Visual stage in the viewer: resolved debate between rigid fixed sizing vs unconstrained adaptiveness by establishing the "360px Base Viewport + Ratio-driven Adaptiveness" contract.
+- Changes:
+  - Documented complete `atlas.json` schema in `SKILL.md` (root, branches, nodes, kind enumeration, cues, distinctions, prompt, examples, sources).
+  - Enforced `/wayfinder` and `/research` as mandatory gates in both workflow principles and step sequences.
+  - Formally upgraded the visual presentation contract in `SKILL.md` and `presentation.md`: anchored to a 360px base width micro-viewport, with aspect ratio adaptation (16:9 for motion/comparison, 1:1 for architecture/grids, 9:16 for mobile/flows) and height naturally expanding up to ~380px max height.
+- Validation: validated test fixtures, updated viewer template CSS, and synced all runtimes via `publish_skills.py`.
+
+## 2026-10-12: Cross-Level Vertical Keyboard Navigation
+
+- Trigger: user feedback that `ArrowDown` should continue through any node visibly below the current selection, instead of stopping at same-level siblings.
+- Changes:
+  - Kept left/right as hierarchy navigation: parent and first child.
+  - Changed up/down to choose the nearest node above or below on the rendered canvas, allowing movement across branches and depth levels.
+  - Preserved focus, active-node styling, highlighted links, and Inspector synchronization.
+- Validation: rebuilt the pilot Viewer and re-ran atlas validation plus browser keyboard navigation checks.
