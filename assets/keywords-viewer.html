@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Keywords Atlas</title>
+  <style>
+    :root { --paper:#f5f3ed; --ink:#19201f; --muted:#68716d; --line:#d0d4ca; --panel:#fffdf8; --green:#1f6256; --green-soft:#dcebe4; --red:#bd4b33; --yellow:#f1c45b; --shadow:0 18px 50px rgba(25,32,31,.09); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); }
+    button { font:inherit; }
+    button:focus-visible, a:focus-visible { outline:3px solid var(--red); outline-offset:3px; }
+    header { padding:28px clamp(18px,5vw,72px) 22px; border-bottom:1px solid var(--line); }
+    .eyebrow { color:var(--green); font-size:.76rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    h1 { max-width:980px; margin:8px 0 10px; font-family:Georgia,"Times New Roman",serif; font-size:clamp(2.2rem,5vw,5.2rem); line-height:1; letter-spacing:0; }
+    .question { max-width:860px; margin:0; color:var(--muted); font-size:1.05rem; line-height:1.55; }
+    main { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr); gap:18px; padding:22px clamp(18px,5vw,72px) 64px; }
+    .map, .detail, .sources { border:1px solid var(--line); background:var(--panel); box-shadow:var(--shadow); }
+    .map { min-height:590px; padding:18px; }
+    .toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+    .toolbar button { border:1px solid var(--line); border-radius:8px; padding:8px 12px; background:transparent; color:var(--ink); cursor:pointer; }
+    .toolbar button[aria-pressed="true"] { color:#fff; border-color:var(--green); background:var(--green); }
+    .tree { display:grid; gap:10px; }
+    .branch { display:grid; gap:8px; padding:12px; border-left:3px solid var(--green); background:var(--green-soft); }
+    .branch-title { margin:0; color:var(--green); font-size:.82rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    .nodes { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:9px; }
+    .node { min-height:108px; padding:13px; text-align:left; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--ink); cursor:pointer; }
+    .node:hover, .node[aria-pressed="true"] { border-color:var(--green); background:#edf6f1; }
+    .node small { display:block; margin-bottom:6px; color:var(--red); font-weight:800; }
+    .node strong { display:block; font-size:1.05rem; }
+    .node span { display:block; margin-top:7px; color:var(--muted); line-height:1.4; }
+    .detail { padding:24px; }
+    .detail h2 { margin:0 0 8px; font-family:Georgia,"Times New Roman",serif; font-size:2rem; }
+    .kind { color:var(--red); font-size:.78rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    .detail h3 { margin:22px 0 7px; font-size:.8rem; color:var(--muted); letter-spacing:.09em; text-transform:uppercase; }
+    .detail p, .detail li { line-height:1.6; }
+    .detail ul { padding-left:20px; }
+    .prompt { margin-top:10px; padding:13px; border-left:3px solid var(--yellow); background:#fff8df; line-height:1.55; }
+    .examples { display:grid; gap:10px; }
+    .example { padding:12px; border:1px solid var(--line); border-radius:8px; }
+    .example img, .example video { width:100%; max-height:230px; object-fit:cover; margin-top:8px; background:#e6e7e1; }
+    .example small { color:var(--muted); }
+    .sources { grid-column:1 / -1; padding:18px 22px; }
+    .sources h2 { margin:0 0 8px; font-size:1.2rem; }
+    .sources ul { margin:0; padding-left:20px; }
+    .sources li { margin:7px 0; }
+    a { color:var(--green); }
+    @media (max-width:900px) { main { grid-template-columns:1fr; } .sources { grid-column:auto; } }
+    @media (prefers-reduced-motion:reduce) { * { scroll-behavior:auto !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">Keywords Atlas</div>
+    <h1 id="title">Concept Atlas</h1>
+    <p class="question" id="question"></p>
+  </header>
+  <main>
+    <section class="map" aria-labelledby="map-heading">
+      <div class="toolbar">
+        <strong id="map-heading">从问题到指令</strong>
+        <button type="button" data-filter="all" aria-pressed="true">全部</button>
+        <button type="button" data-filter="keyword" aria-pressed="false">杠杆词</button>
+        <button type="button" data-filter="concept" aria-pressed="false">概念</button>
+      </div>
+      <div class="tree" id="tree"></div>
+    </section>
+    <aside class="detail" aria-live="polite">
+      <div class="kind" id="detail-kind">Select a node</div>
+      <h2 id="detail-title">选择一个概念</h2>
+      <p id="detail-summary">从左侧图谱开始。点击节点后，这里会显示它的意义、可观察证据和调用方式。</p>
+      <div id="detail-body"></div>
+    </aside>
+    <section class="sources" aria-labelledby="sources-heading">
+      <h2 id="sources-heading">Sources and open edges</h2>
+      <ul id="sources-list"></ul>
+    </section>
+  </main>
+  <script>
+    /*__ATLAS_DATA__*/
+    const atlas = window.ATLAS || { title: 'Keywords Atlas', question: '', nodes: [], sources: [], unresolved: [] };
+    const title = document.querySelector('#title');
+    const question = document.querySelector('#question');
+    const tree = document.querySelector('#tree');
+    const detailKind = document.querySelector('#detail-kind');
+    const detailTitle = document.querySelector('#detail-title');
+    const detailSummary = document.querySelector('#detail-summary');
+    const detailBody = document.querySelector('#detail-body');
+    title.textContent = atlas.title || 'Keywords Atlas';
+    question.textContent = atlas.question || '';
+
+    const kinds = new Set(['keyword', 'concept', 'decision', 'dimension']);
+    const branches = atlas.branches || [];
+    const nodes = atlas.nodes || [];
+    const nodeById = new Map(nodes.map(node => [node.id, node]));
+
+    function esc(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
+    }
+    function media(example) {
+      if (!example.src) return '';
+      if (example.type === 'image') return `<img src="${esc(example.src)}" alt="${esc(example.alt || example.title || '')}">`;
+      if (example.type === 'video') return `<video controls preload="metadata" src="${esc(example.src)}"></video>`;
+      return `<p><a href="${esc(example.src)}">打开示例</a></p>`;
+    }
+    function selectNode(node) {
+      document.querySelectorAll('.node').forEach(item => item.setAttribute('aria-pressed', String(item.dataset.id === node.id)));
+      detailKind.textContent = node.kind || 'concept';
+      detailTitle.textContent = node.label || node.id;
+      detailSummary.textContent = node.summary || '';
+      const cues = (node.cues || []).map(item => `<li>${esc(item)}</li>`).join('');
+      const distinctions = (node.distinctions || []).map(item => `<li><strong>${esc(item.label || '区别')}：</strong>${esc(item.text || item)}</li>`).join('');
+      const examples = (node.examples || []).map(item => `<article class="example"><strong>${esc(item.title || 'Example')}</strong><br><small>${esc(item.caption || '')}</small>${media(item)}${item.source ? `<p><small>Source: <a href="${esc(item.source)}">${esc(item.source_label || item.source)}</a></small></p>` : ''}</article>`).join('');
+      detailBody.innerHTML = `${node.why ? `<h3>Why it matters</h3><p>${esc(node.why)}</p>` : ''}${cues ? `<h3>What to notice</h3><ul>${cues}</ul>` : ''}${distinctions ? `<h3>Nearby distinction</h3><ul>${distinctions}</ul>` : ''}${node.prompt ? `<h3>Command translation</h3><div class="prompt">${esc(node.prompt)}</div>` : ''}${examples ? `<h3>Observable examples</h3><div class="examples">${examples}</div>` : ''}`;
+    }
+    function render(filter = 'all') {
+      const visible = nodes.filter(node => filter === 'all' || node.kind === filter);
+      const grouped = new Map();
+      visible.forEach(node => { const key = node.branch || node.parent || 'atlas'; if (!grouped.has(key)) grouped.set(key, []); grouped.get(key).push(node); });
+      tree.innerHTML = [...grouped.entries()].map(([key, group]) => {
+        const branch = branches.find(item => item.id === key);
+        return `<section class="branch"><h3 class="branch-title">${esc(branch?.label || key)}</h3><div class="nodes">${group.map(node => `<button class="node" type="button" data-id="${esc(node.id)}"><small>${esc(node.kind || 'concept')}</small><strong>${esc(node.label)}</strong><span>${esc(node.summary || '')}</span></button>`).join('')}</div></section>`;
+      }).join('') || '<p>没有可展示的节点。</p>';
+      tree.querySelectorAll('.node').forEach(button => button.addEventListener('click', () => selectNode(nodeById.get(button.dataset.id))));
+      if (visible[0]) selectNode(visible[0]);
+    }
+    document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      render(button.dataset.filter);
+    }));
+    render();
+    const sourceItems = [...(atlas.sources || []).map(item => `<li>${item.url ? `<a href="${esc(item.url)}">${esc(item.label || item.url)}</a>` : esc(item.label || item)}</li>`), ...(atlas.unresolved || []).map(item => `<li>${esc(item)}</li>`)].join('');
+    document.querySelector('#sources-list').innerHTML = sourceItems || '<li>本图谱暂未记录来源或开放问题。</li>';
+  </script>
+</body>
+</html>

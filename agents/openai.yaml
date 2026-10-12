@@ -1,0 +1,4 @@
+interface:
+  display_name: "Keywords"
+  short_description: "Build a visual, grep-friendly domain keyword atlas for better AI instructions"
+  default_prompt: "Use $keywords to map the concepts and leverage words I need for this AI-assisted domain task, research observable examples, and build the HTML atlas plus Markdown Wiki."

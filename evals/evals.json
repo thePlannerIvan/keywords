@@ -1,0 +1,39 @@
+{
+  "skill_name": "keywords",
+  "evals": [
+    {
+      "id": "bento-forward-test",
+      "prompt": "我想让 AI 做一个更像 Bento 风格的产品介绍页，但我不知道 Bento 到底是什么。帮我建立一个小型关键词图谱，并让我知道该怎么下命令。",
+      "route_expected": "keyword-atlas",
+      "expected_behavior_change": "从问题出发研究并展示 Bento 的可观察结构、边界案例、相邻区别和指令翻译，而不是只给一句定义。",
+      "must_do": [
+        "明确问题与目标判断",
+        "把可观察示例作为术语可调用性的必要条件",
+        "输出问题根节点、分支、概念卡片和命令翻译",
+        "同时准备 HTML 人类视图与可 grep 的 Markdown 结构"
+      ],
+      "must_not_do": [
+        "把整个网页设计领域都纳入",
+        "把 Bento 当作万能风格词",
+        "只列术语不提供案例",
+        "把生成 HTML 误当作语义验证"
+      ]
+    },
+    {
+      "id": "single-definition-boundary",
+      "prompt": "什么是视觉层级？用一个例子解释。",
+      "route_expected": "direct-explanation",
+      "expected_behavior_change": "直接解释单一概念，不启动完整的 Wayfinder、Research 和 Viewer 流程。",
+      "must_do": ["给出清晰定义和一个例子"],
+      "must_not_do": ["创建知识图谱", "建立研究包", "要求用户先定义领域终点"]
+    },
+    {
+      "id": "execution-boundary",
+      "prompt": "帮我把这个页面改成 Bento 风格。",
+      "route_expected": "route-to-execution",
+      "expected_behavior_change": "识别为执行请求；只有用户同时表达知识缺口时才启动关键词图谱。",
+      "must_do": ["交给相关设计执行能力或先询问是否需要补概念"],
+      "must_not_do": ["自动建立完整领域 Wiki"]
+    }
+  ]
+}

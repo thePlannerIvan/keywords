@@ -1,0 +1,49 @@
+{
+  "title": "Bento 风格：产品介绍页",
+  "question": "如何让 AI 做出模块化但仍然有主叙事的产品介绍页？",
+  "branches": [
+    { "id": "layout", "label": "布局结构" },
+    { "id": "hierarchy", "label": "信息层级" }
+  ],
+  "nodes": [
+    {
+      "id": "layout",
+      "label": "模块化布局",
+      "kind": "concept",
+      "branch": "layout",
+      "summary": "把复杂内容拆成可独立扫描的内容单元。"
+    },
+    {
+      "id": "bento",
+      "label": "Bento 风格",
+      "kind": "keyword",
+      "branch": "layout",
+      "parent": "layout",
+      "summary": "用不同尺寸的模块组织信息，但保持整体秩序。",
+      "why": "它帮助 AI 同时理解模块化结构、扫描效率和页面节奏。",
+      "cues": ["模块尺寸有变化", "每个模块有明确内容边界", "留白和对齐维持整体秩序"],
+      "distinctions": [
+        { "label": "不是卡片堆叠", "text": "模块之间仍然服务于同一个主叙事，不是把每个信息都做成独立卡片。" }
+      ],
+      "prompt": "使用 Bento 式模块化布局组织产品信息，但保留单一主叙事、清晰视觉层级和克制的模块数量。",
+      "examples": [
+        { "title": "结构示例", "caption": "示例素材缺失时，必须明确标注而不是假装已有图片。" }
+      ]
+    },
+    {
+      "id": "hierarchy",
+      "label": "视觉层级",
+      "kind": "concept",
+      "branch": "hierarchy",
+      "summary": "让用户知道先看什么、再看什么。"
+    }
+  ],
+  "edges": [
+    { "from": "layout", "to": "bento", "relation": "includes" },
+    { "from": "bento", "to": "hierarchy", "relation": "depends on" }
+  ],
+  "sources": [
+    { "label": "Example source placeholder", "url": "https://example.com" }
+  ],
+  "unresolved": ["需要补充一个真实 Bento 页面截图并标注决定性结构。"]
+}
