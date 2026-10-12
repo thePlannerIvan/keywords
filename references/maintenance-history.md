@@ -82,3 +82,14 @@
   - Changed up/down to choose the nearest node above or below on the rendered canvas, allowing movement across branches and depth levels.
   - Preserved focus, active-node styling, highlighted links, and Inspector synchronization.
 - Validation: rebuilt the pilot Viewer and re-ran atlas validation plus browser keyboard navigation checks.
+
+## 2026-10-12: Dynamic Column Mindmap Layout, Flexbox Anti-Crush & Multi-Path DSH Token Resolution
+
+- Trigger: user report showing mindmap label collision/overlap across levels, Inspector stage bottom-clipping on SVG cards, and unstyled appearance due to missing DSH tokens.
+- Changes:
+  - Replaced hardcoded column X positions in `keywords-viewer.html` (`layoutTree`) with a 2-pass dynamic layout: recursively measures max label width per depth level and computes non-overlapping column offsets with a fixed 54px breathing gap.
+  - Added `.stage-section { flex-shrink: 0; }` preventing Flexbox column containers from collapsing `overflow: hidden` stage elements down to 94px in constrained viewports.
+  - Upgraded `resetView()` to auto-fit using content bounding box and automatically invoked it on `DOMContentLoaded`.
+  - Expanded `build_viewer.py` DSH token candidate search paths to cover monorepo source tree, installed runtime sibling directories (`~/.claude/skills`, `~/.codex/skills`, `~/.gemini/config/skills`), and workspace root; upgraded missing token behavior to throw an explicit error rather than silently degrading to unstyled text.
+- Validation: Playwright headless browser rendering tests confirming 100% complete micro-cards, zero node collision, smooth S-curve bezier connections, and authentic DSH design tokens inlined.
+

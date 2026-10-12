@@ -37,10 +37,18 @@ def main() -> int:
     # Inline DSH design tokens if available
     token_placeholder = "/*__DSH_TOKENS__*/"
     if token_placeholder in template:
-        # Search for canonical dsh-tokens.css
+        # Search for canonical dsh-tokens.css in planners-review-core
         candidate_paths = [
+            # 1. Monorepo source tree (02-skills-library/06-agent-productivity/keywords/scripts/ -> parents[3] is 02-skills-library)
             Path(__file__).resolve().parents[3] / "00-system" / "planners-review-core" / "assets" / "dsh-tokens.css",
-            Path.home() / ".dsh" / "skills" / "planners-review-core" / "assets" / "dsh-tokens.css",
+            # 2. Installed runtime skill sibling (e.g. ~/.claude/skills/keywords/scripts/ -> parents[2] is ~/.claude/skills)
+            Path(__file__).resolve().parents[2] / "planners-review-core" / "assets" / "dsh-tokens.css",
+            # 3. Known agent runtime roots
+            Path.home() / ".claude" / "skills" / "planners-review-core" / "assets" / "dsh-tokens.css",
+            Path.home() / ".codex" / "skills" / "planners-review-core" / "assets" / "dsh-tokens.css",
+            Path.home() / ".gemini" / "config" / "skills" / "planners-review-core" / "assets" / "dsh-tokens.css",
+            # 4. Workspace / CWD fallback
+            Path("02-skills-library/00-system/planners-review-core/assets/dsh-tokens.css").resolve(),
         ]
         sheet_text = ""
         for p in candidate_paths:
@@ -53,8 +61,10 @@ def main() -> int:
                 f"/*===DSH_TOKENS_BEGIN===*/\n{sheet_text.rstrip()}\n/*===DSH_TOKENS_END===*/",
             )
         else:
-            # Clean up placeholder if tokens file is unavailable
-            template = template.replace(token_placeholder, "/* DSH tokens not found, using CSS fallbacks */")
+            raise SystemExit(
+                "Error: planners-review-core/assets/dsh-tokens.css not found. "
+                "Ensure planners-review-core is available in the skills library or runtimes."
+            )
 
     # Keep user-provided concept text from terminating the script tag.
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")

@@ -194,14 +194,14 @@
     /* 连线与节点样式：克制、严谨、不卡顿 */
     .link-path {
       fill: none;
-      stroke: var(--dsw-alias-border-l2);
-      stroke-width: 1.2px;
+      stroke: var(--dsw-alias-border-l2, #cbd5e1);
+      stroke-width: 1.5px;
       transition: stroke 0.2s, stroke-width 0.2s;
     }
 
     .link-path.highlight {
-      stroke: var(--dsw-static-deepseek-500);
-      stroke-width: 2px;
+      stroke: var(--dsw-static-deepseek-500, #2563eb);
+      stroke-width: 2.2px;
     }
 
     .node-group {
@@ -423,6 +423,7 @@
       border-radius: var(--dsw-radius-md);
       background: var(--dsw-alias-bg-layer-2);
       overflow: hidden;
+      flex-shrink: 0;
     }
 
     .stage-bar {
@@ -1073,32 +1074,45 @@
       return Math.max(160, Math.round(len + 36 + (isKeyword ? 65 : 0)));
     }
 
-    // 树状布局算法
+    // 树状布局算法：动态度量各层级最大宽度，杜绝重叠碰撞
     function layoutTree(root) {
-      const LEVEL_GAP = 70;
+      const LEVEL_GAP = 54;
       const SIBLING_GAP = 14;
-      let currentY = 30;
 
-      function measureAndPosition(node, depth) {
+      const depthMaxWidth = {};
+      function measureSubtree(node, depth) {
         node.depth = depth;
         const isKeyword = node.kind === 'keyword';
         node.width = node.kind === 'root' ? 240 : measureNodeWidth(node.label, isKeyword);
         node.height = node.kind === 'root' ? 44 : 34;
-        node.x = depth === 0 ? 30 : (depth === 1 ? 310 : (depth === 2 ? 550 : 810));
+        depthMaxWidth[depth] = Math.max(depthMaxWidth[depth] || 0, node.width);
+        if (node.children) {
+          node.children.forEach(c => measureSubtree(c, depth + 1));
+        }
+      }
+      measureSubtree(root, 0);
 
+      const depthX = { 0: 30 };
+      const depths = Object.keys(depthMaxWidth).map(Number).sort((a, b) => a - b);
+      for (let i = 0; i < depths.length - 1; i++) {
+        const d = depths[i];
+        depthX[d + 1] = depthX[d] + (depthMaxWidth[d] || 200) + LEVEL_GAP;
+      }
+
+      let currentY = 30;
+      function positionSubtree(node) {
+        node.x = depthX[node.depth] !== undefined ? depthX[node.depth] : 30;
         if (!node.children || node.children.length === 0) {
           node.y = currentY;
           currentY += node.height + SIBLING_GAP;
         } else {
-          node.children.forEach(c => measureAndPosition(c, depth + 1));
+          node.children.forEach(c => positionSubtree(c));
           const first = node.children[0];
           const last = node.children[node.children.length - 1];
           node.y = (first.y + last.y) / 2;
         }
       }
-
-      currentY = 30;
-      measureAndPosition(root, 0);
+      positionSubtree(root);
     }
 
     // 渲染导图
@@ -1209,9 +1223,30 @@
     }
 
     function resetView() {
-      scale = 0.95;
-      translateX = 30;
-      translateY = 30;
+      const rect = vp.getBoundingClientRect();
+      const allNodes = getVisualNodes();
+      if (!allNodes || allNodes.length === 0 || rect.width <= 0 || rect.height <= 0) {
+        scale = 0.8;
+        translateX = 30;
+        translateY = 30;
+        updateCanvasTransform();
+        return;
+      }
+      let minX = Infinity, maxX = -Infinity;
+      let minY = Infinity, maxY = -Infinity;
+      allNodes.forEach(n => {
+        minX = Math.min(minX, n.x);
+        maxX = Math.max(maxX, n.x + n.width);
+        minY = Math.min(minY, n.y);
+        maxY = Math.max(maxY, n.y + n.height);
+      });
+      const pad = 36;
+      const contentW = maxX - minX + pad * 2;
+      const contentH = maxY - minY + pad * 2;
+      const fitScale = Math.min(rect.width / contentW, rect.height / contentH);
+      scale = Math.min(Math.max(Number(fitScale.toFixed(2)), 0.4), 1.0);
+      translateX = Math.round((rect.width - (maxX - minX) * scale) / 2 - minX * scale);
+      translateY = Math.max(20, Math.round((rect.height - (maxY - minY) * scale) / 2 - minY * scale));
       updateCanvasTransform();
     }
 
@@ -1508,6 +1543,9 @@
       // 默认打开第一个核心杠杆词进行同屏对照
       const firstKw = (atlas.nodes || []).find(n => n.kind === 'keyword');
       if (firstKw) openInspector(firstKw.id);
+      requestAnimationFrame(() => {
+        resetView();
+      });
     });
   </script>
 </body>
