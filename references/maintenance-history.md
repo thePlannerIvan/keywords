@@ -51,3 +51,13 @@
   - Kept `{{REVIEW_BRIDGE}}` as the single bare review-core seam and made `build_viewer.py` reject malformed or duplicated markers; standalone bootstrap removes the untouched marker before first paint.
   - Updated node selection to change active state in place rather than rebuilding the entire mindmap during Inspector navigation.
 - Validation: atlas validation, generated Viewer build, JavaScript parse check, browser regression across all 20 keyword nodes, keyboard activation, collapse behavior, and 390px viewport checks.
+
+## 2026-10-12: Canvas Navigation & Tree Keyboard Control
+
+- Trigger: dragging the mindmap selected page text, trackpad two-finger navigation felt like browser scrolling, and selecting a node did not provide a keyboard path through the tree.
+- Changes:
+  - Added `user-select: none`, pointer capture, and pointer events so canvas dragging pans without selecting labels.
+  - Mapped non-pinched wheel deltas to horizontal/vertical canvas panning and `ctrlKey` pinch deltas to cursor-centered zooming.
+  - Added tree-aware arrow navigation: left/right moves to parent/first child, up/down moves between same-level siblings; focus and Inspector follow the selected node.
+  - Added accessible selected-state updates and branch/root Inspector states so keyboard navigation remains legible at every tree level.
+- Validation: JavaScript parse, atlas validation, browser keyboard navigation for child/sibling/parent movement, standalone marker check, and responsive Viewer regression.
