@@ -93,3 +93,14 @@
   - Expanded `build_viewer.py` DSH token candidate search paths to cover monorepo source tree, installed runtime sibling directories (`~/.claude/skills`, `~/.codex/skills`, `~/.gemini/config/skills`), and workspace root; upgraded missing token behavior to throw an explicit error rather than silently degrading to unstyled text.
 - Validation: Playwright headless browser rendering tests confirming 100% complete micro-cards, zero node collision, smooth S-curve bezier connections, and authentic DSH design tokens inlined.
 
+## 2026-10-12: Same-Depth Vertical Navigation Across Branches & Hierarchical Horizontal Traversal
+
+- Trigger: user feedback that spatial vertical navigation was chaotic; requested that Up/Down strictly move across nodes at the exact same depth level (allowing cross-branch jumps), while Left/Right strictly traverses hierarchy levels.
+- Changes:
+  - Replaced arbitrary spatial Y navigation with `getNodesAtDepth(node.depth)`, collecting all nodes at the same tree depth across the atlas and sorting by vertical Y order.
+  - Up/Down keys strictly cycle within this same-depth list, smoothly leaping across branches without shifting depth.
+  - Left key ascends to parent node (`depth - 1`); Right key descends to the vertically closest child node (`depth + 1`).
+  - Implemented `ensureNodeVisible(target)` auto-panning so nodes remain comfortably in view during keyboard traversal.
+  - Added global window keydown listener so arrow navigation works immediately without requiring manual focus on a node pill.
+- Validation: validated JS syntax with Node, rebuilt viewers for `ppt-layout` and `video-motion`, and verified multi-runtime sync.
+

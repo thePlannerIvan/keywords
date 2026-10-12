@@ -1341,41 +1341,100 @@
       if (options.focus !== false) focusTreeNode(nodeId);
     }
 
-    function getVisualNodes() {
+    function getNodesAtDepth(depth) {
       const nodes = [];
       function collect(node) {
-        nodes.push(node);
+        if (node.depth === depth) {
+          nodes.push(node);
+        }
         (node.children || []).forEach(collect);
       }
       collect(rootNode);
-      return nodes;
+      return nodes.sort((a, b) => (a.y + a.height / 2) - (b.y + b.height / 2));
     }
 
-    function findVerticalNode(node, direction) {
-      const visualNodes = getVisualNodes().sort((a, b) => {
-        const yDelta = (a.y + a.height / 2) - (b.y + b.height / 2);
-        if (Math.abs(yDelta) > 0.5) return yDelta;
-        return a.x - b.x;
-      });
-      const index = visualNodes.findIndex(candidate => candidate.id === node.id);
-      if (index < 0) return null;
-      const targetIndex = direction === 'down' ? index + 1 : index - 1;
-      return visualNodes[targetIndex] || null;
+    function ensureNodeVisible(node) {
+      if (!node) return;
+      const rect = vp.getBoundingClientRect();
+      const inspectorPanel = document.getElementById('inspector-panel');
+      const inspectorWidth = (inspectorPanel && !inspectorPanel.classList.contains('collapsed')) ? 440 : 0;
+      const availableWidth = rect.width - inspectorWidth;
+      const availableHeight = rect.height;
+      if (availableWidth <= 100 || availableHeight <= 100) return;
+
+      const nodeScreenLeft = translateX + node.x * scale;
+      const nodeScreenRight = nodeScreenLeft + node.width * scale;
+      const nodeScreenTop = translateY + node.y * scale;
+      const nodeScreenBottom = nodeScreenTop + node.height * scale;
+
+      const PADDING_X = 60;
+      const PADDING_Y = 50;
+
+      let changed = false;
+      if (nodeScreenLeft < PADDING_X) {
+        translateX += (PADDING_X - nodeScreenLeft);
+        changed = true;
+      } else if (nodeScreenRight > availableWidth - PADDING_X) {
+        translateX -= (nodeScreenRight - (availableWidth - PADDING_X));
+        changed = true;
+      }
+
+      if (nodeScreenTop < PADDING_Y) {
+        translateY += (PADDING_Y - nodeScreenTop);
+        changed = true;
+      } else if (nodeScreenBottom > availableHeight - PADDING_Y) {
+        translateY -= (nodeScreenBottom - (availableHeight - PADDING_Y));
+        changed = true;
+      }
+
+      if (changed) {
+        updateCanvasTransform();
+      }
     }
 
     function moveNodeFocus(nodeId, key) {
       const node = treeNodeMap.get(nodeId);
       if (!node) return;
-      const parent = parentMap.get(nodeId);
       let target = null;
-      if (key === 'ArrowLeft') {
-        target = parent;
+
+      if (key === 'ArrowUp' || key === 'ArrowDown') {
+        // 上下移动：必须在同一层级（same depth）上移动，跨越不同分支
+        const peers = getNodesAtDepth(node.depth);
+        const index = peers.findIndex(candidate => candidate.id === node.id);
+        if (index >= 0) {
+          if (key === 'ArrowDown') {
+            target = peers[index + 1] || null;
+          } else {
+            target = peers[index - 1] || null;
+          }
+        }
+      } else if (key === 'ArrowLeft') {
+        // 向左移动：进入上一层级（父级）
+        const parent = parentMap.get(node.id);
+        if (parent) {
+          target = parent;
+        }
       } else if (key === 'ArrowRight') {
-        target = (node.children || [])[0] || null;
-      } else if (key === 'ArrowUp' || key === 'ArrowDown') {
-        target = findVerticalNode(node, key === 'ArrowDown' ? 'down' : 'up');
+        // 向右移动：进入下一层级（子级中垂直距离最接近的一项）
+        if (node.children && node.children.length > 0) {
+          let best = node.children[0];
+          let minDiff = Math.abs((best.y + best.height / 2) - (node.y + node.height / 2));
+          for (let i = 1; i < node.children.length; i++) {
+            const child = node.children[i];
+            const diff = Math.abs((child.y + child.height / 2) - (node.y + node.height / 2));
+            if (diff < minDiff) {
+              minDiff = diff;
+              best = child;
+            }
+          }
+          target = best;
+        }
       }
-      if (target) selectTreeNode(target.id, { focus: true });
+
+      if (target && target.id !== node.id) {
+        selectTreeNode(target.id, { focus: true });
+        ensureNodeVisible(target);
+      }
     }
 
     function openContainerInspector(node) {
@@ -1387,10 +1446,10 @@
       document.getElementById('atlas-stats').textContent = `${keywordNodes.length} 个杠杆词`;
       document.getElementById('ins-title').textContent = node.label;
       document.getElementById('ins-why').textContent = node.summary || '从这里沿箭头进入下一层概念。';
-      document.getElementById('ins-distinction').textContent = '用方向键左右进入层级，上下沿画布纵向节点移动。';
+      document.getElementById('ins-distinction').textContent = '用左右键进出层级（左退父级，右进子级），上下键在同层级节点间切换（可跨分支）。';
       const cueList = document.getElementById('ins-cues');
       cueList.innerHTML = '';
-      ['右方向键进入下一级', '上下方向键沿画布顺序移动', '选中后右侧说明会同步更新'].forEach(cue => {
+      ['左右方向键：进出上/下一层级（左退父级，右进子级）', '上下方向键：在同层级节点间垂直切换（可跨分支）', '选中节点后：右侧说明与微卡片实时同步'].forEach(cue => {
         const li = document.createElement('li');
         li.textContent = cue;
         cueList.appendChild(li);
@@ -1537,6 +1596,24 @@
       const b = (atlas.branches || []).find(x => x.id === bId);
       return b ? b.label : bId;
     }
+
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName) || document.activeElement?.isContentEditable) {
+        return;
+      }
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        if (currentActiveNodeId) {
+          e.preventDefault();
+          moveNodeFocus(currentActiveNodeId, e.key);
+        } else {
+          const firstKw = (atlas.nodes || []).find(n => n.kind === 'keyword') || rootNode;
+          if (firstKw) {
+            e.preventDefault();
+            selectTreeNode(firstKw.id, { focus: true });
+          }
+        }
+      }
+    });
 
     window.addEventListener('DOMContentLoaded', () => {
       renderMindmap();
