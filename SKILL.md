@@ -1,196 +1,109 @@
 ---
 name: keywords
-description: Build a problem-rooted keyword atlas for AI-assisted work in an unfamiliar domain. Use when the user needs to learn the vocabulary that changes AI instructions, asks for a concept map or domain keyword Wiki, or needs concrete examples before using a professional term. Repeat Wayfinder-style decision mapping and Research until the target question has enough evidence, observable examples, leverage words, and command translations. Produce a reusable local-first HTML atlas plus a grep-friendly Markdown Wiki; do not promise full professional mastery.
+description: 为具体创作与专业领域构建好用的「杠杆词图谱 / 工具清单」。用直观的思维导图、针对性的最佳可视化呈现（UI动效、真实图片、结构图）和一键指令，帮助人快速看懂、即刻调用该领域的关键术语。
 ---
 
-# Keywords
+# Keywords：领域杠杆词图谱与工具清单
 
-## Purpose
+将一个未知或专业领域的概念体系，沉淀为一份**直观、好用、开箱即取的杠杆词图谱（Leverage Words Atlas）与可调度工具清单**。
 
-`keywords` solves a language problem before it becomes a prompting problem:
+---
 
-> When a person does not know the concepts of a field, they cannot describe the quality they want. The model fills the missing structure with defaults, so people get very different results from the same tool.
+## 一、为什么要做这个工作：底层意义与理论根基
 
-The goal is not to make the user memorize jargon or become a certified professional. The goal is to let the user quickly recognize the useful concepts in a field and invoke them in AI instructions.
+### 1. 现实痛点：语言的边界即认知的边界
+当我们在用 AI 探索或创作某个领域的内容时，新手与高手的差距并不在打字速度，而在**领域基础概念的贫瘠与丰饶**：
+* 新手只能用漫无边际的日常大白话勉强描述：“做一个酷炫的网页，有很多圆角小方块，黑色边框粗一点，黄色背景...”；
+* 专家只需说一个词：“`Neobrutalism`” 或 “`Bento Grid`”。
 
-This Skill has two equal outputs:
+**“Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt”**（我的语言的界限意味着我的世界的界限 —— 维特根斯坦）。人类无法思考自己未曾命名的概念，更无法要求 AI 精确生成自己说不出来的东西。
 
-- **Human view:** a designed, local-first HTML atlas with a problem-rooted tree, concrete examples, comparisons, and command translations.
-- **Model view:** a grep-friendly Markdown Wiki containing the same concepts, evidence, examples, boundaries, and instructions.
+### 2. 大模型潜空间的物理机制：漫散射 vs 概念流形引力
+大语言模型不是字面打字机，而是高维潜在空间的流形采样器：
+* **日常漫散射与均值坍缩（Regression to the Mean）**：模糊的日常描述会导致注意力在潜在空间中过度弥散，最终退化为全网统计概率的平庸均值（即俗称的 "AI Slop"）；
+* **杠杆词的强引导向量（Steering Vectors & Anchor Tokens）**：权威领域术语是大模型高信噪比的致密概念锚点。你说出一个精准的杠杆词，就能促使多层自注意力机制瞬间收敛到该领域专家语料的优质流形上。
 
-Markdown is the editable source. HTML is a reusable viewing tool, not a second source of truth.
+### 3. 背后的四大跨学科理论根基
+1. **语言哲学（维特根斯坦 Ludwig Wittgenstein）**：语言图式论与“语言游戏”（Language-game）。一个领域专业词汇不是孤立标签，而是背后一整套操作规则、美学规范与生活形式的启动契约。
+2. **认知心理学（赫伯特·西蒙 Herbert Simon 的组块理论）**：专家与新手的短期记忆容量完全相同（4~7个槽位），差距在于脑中数以万计的知识组块（Chunks / Schemas）。一个杠杆词把数十个复杂底层参数高度压缩为 1 个认知单元，将人机协同的认知负荷降到最低。
+3. **表征工程（Representation Engineering）**：在大模型的残差流与潜空间中，专业术语拥有极高的信息压缩比与几何导向力，是最高效的微控手柄。
+4. **知识本体工程（Domain Ontology）**：构建由“核心问题 $\rightarrow$ 杠杆词 $\rightarrow$ 关键槽位”构成的轻量领域微本体（Micro-Ontology），让人类以极低成本掌握对陌生垂类领域的绝对操控权。
 
-## Core ideas
+### 4. 什么是杠杆词（Leverage Word）
+普通词汇只是描述标签，**杠杆词是高密度控制手柄**。
+它的黄金调度公式是：
+$$\text{专业调度指令} = \text{核心杠杆词 (Anchor)} + \text{2~3 个不可妥协的属性槽位 (Canonical Constraints)}$$
+它让用户不仅能“看懂概念”，更能“一键调用并精准约束 AI”。
 
-### Leverage words
+---
 
-A leverage word is not merely a popular or technical term. It is a word that compresses a stable bundle of domain constraints and changes the direction of an AI output.
+## 二、核心协同工具：Wayfinder 与 Research
 
-A word earns leverage when a person can:
+构建高质量的杠杆词图谱，离不开两个前置工具的强力支持：
 
-1. recognize it in a real example;
-2. distinguish it from a nearby concept;
-3. explain what decision it helps make;
-4. put it into an instruction;
-5. check whether the resulting work moved in the intended direction.
+* **`/wayfinder`（迷雾导航与认知建图）**：
+  面对一个陌生的大领域，不要盲目收集词汇。先使用 `wayfinder` 探明领域骨架、梳理认知边界与关键决策分支，将开放式的“学科迷雾”收敛为 3~5 个锐利聚焦的调研方向。
+* **`/research`（证据搜集与地基调研）**：
+  沿着 `wayfinder` 划定的方向，调用 `research` 深入挖掘一手文献、行业标杆作品、权威代码实现和真实案例，确保图谱中的每一个杠杆词都真实存在、行业通用、有据可查，坚决杜绝模型无中生有的凭空臆造。
 
-Never promote a term from a definition alone. Give it observable cues, a positive example, a boundary or counterexample, a neighboring distinction, and a command translation. A word people cannot recognize is only a label; a word they can recognize but cannot invoke is only a reference.
+---
 
-### Knowledge graph
+## 三、可视化呈现原则：按内容本质自主判断
 
-The atlas is not an encyclopedia and not a random network of terms. It starts from the user's real question and expands only as far as that question requires:
+**核心目标：帮助人类在最短时间内建立直观认知（所见即所得）。**
 
-```text
-question
-  -> decisions to make
-    -> judgment dimensions
-      -> concepts and schools
-        -> types, contrasts, and boundaries
-          -> observable examples
-            -> command translations
-```
+不同的领域内容，最让人秒懂的呈现角度完全不同。不需要死板套用单一表格模版，**由模型根据概念的第一性原理，自主挑选最具解释力的可视化载体**：
 
-The graph may be broad for "how do I do web design?" and narrow for "how do I make a video motion effect feel heavy?". Scope follows the question, not the size of the field.
+* **例如动效与交互（Motion & Interaction）**：人类肉眼很难通过静态文字想象时序与加速度。此时在沙盒中跑一段轻量 HTML/CSS 活体动效，配上重播或调节参数，直观性远超千言万语；
+* **例如视觉风格与美学质感（Visual Style, Aesthetics, Photography）**：风格词汇高度抽象，提供一张高保真的经典案例实景截图或细节对比图，能让人一眼看懂质感特征；
+* **例如系统架构与时序逻辑（Architecture, Pipeline & Logic Flow）**：节点因果错综复杂，干净利落的矢量拓扑图或 SVG 关系图能最快传达结构脉络；
+* **例如底层代码与参数规范（Code, Shaders, Tokens）**：高对比度的代码卡片并高亮关键属性槽位（如 `clip-path`、`stagger`、`spring`），方便人一键复制调参；
+* **例如概念推演与分类层次（Ontology & Taxonomy）**：思维导图本身的节点脉络搭配精炼的一句话差异辨析（Distinction），即是最好的说明。
 
-### Observability and presentation
+模型在处理具体节点时，应权衡用户最困惑什么、什么形式最解惑，灵活选用甚至组合上述载体。
 
-The purpose of observability is fast recognition: a person should be able to see, hear, compare, or otherwise understand what a concept means before being asked to use its name.
+---
 
-Choose the representation that exposes the relevant difference:
-
-- hierarchy for general-to-specific structure;
-- comparison for neighboring concepts and schools;
-- real images for visual styles;
-- playable local clips or frame strips for motion and video style;
-- annotated diagrams for invisible structure;
-- before/after command translations for instruction leverage.
-
-An attractive HTML page that does not make the concept easier to recognize has failed. Do not decorate a glossary; make the evidence and the relation visible.
-
-## Workflow
-
-### 1. Define the question and destination
-
-Turn the user's broad request into one working question. Separate:
-
-- the work they want AI to help with;
-- the decisions they currently cannot make;
-- the vocabulary they need now;
-- what is deliberately outside this atlas.
-
-Do not start with "all of design" or "everything about video". Name the next useful judgment.
-
-**Done when:** the question, target decisions, provisional scope, and transfer situation are explicit.
-
-### 2. Map the fog
-
-For a broad or branching topic, call `$wayfinder` to create or update a decision map, turn sharp unknowns into tickets, and keep unresolved fog separate from settled decisions. The map answers what must be decided about the research route; it is not the final concept graph. If the host does not allow nested invocation of the user-invoked Wayfinder Skill, follow its local Markdown tracker protocol directly and keep the same map/ticket shape.
-
-Use the local Markdown tracker when the repository has no external tracker. Do not wait for a perfect map before the first useful research pass.
-
-**Done when:** the research frontier is visible and the next question is concrete enough to investigate.
-
-### 3. Research the field around the question
-
-Call `$research` for source discovery, preservation, provenance, and failure records. Research enough to cover:
-
-- foundational definitions and real usage;
-- important types, schools, or competing explanations;
-- concrete positive, contrast, boundary, and failure examples;
-- media that makes the concept observable;
-- unresolved disagreements and missing evidence.
-
-Repeat the Wayfinder and Research loop when new evidence changes the map. Stop when the next research pass is no longer changing the decisions, concept branches, or examples needed for the user's question. Do not research the whole field for its own sake.
-
-**Done when:** every important branch has a source or an explicit evidence gap, and the atlas can teach recognition rather than only recite definitions.
-
-### 4. Extract and test leverage words
-
-For each candidate term, record:
-
-- plain-language meaning;
-- the decision it helps make;
-- observable cues;
-- nearby concepts it is often confused with;
-- positive example and boundary example;
-- an instruction that uses the term precisely;
-- source and uncertainty.
-
-Promote a candidate only after it survives a small transfer check on an unseen example. If a term cannot change a decision or instruction, leave it as supporting vocabulary rather than a headline keyword.
-
-**Done when:** the important terms are usable handles, not a list of names.
-
-### 5. Compile the atlas
-
-Write the editable Markdown Wiki first. Organize it around the question-rooted tree, then generate the reusable HTML Viewer from the atlas data. Keep local media beside the atlas whenever possible; retain source links and state clearly when an asset could not be saved or verified.
-
-The first viewport must show the question, the whole tree, and the user's current position. Selecting a node must reveal its meaning, why it matters, observable evidence, distinctions, and command translation without losing the map.
-
-**Done when:** a first-time reader can locate the relevant branch, understand at least one concept from its example, and find its instruction form; the same information is grep-able in Markdown.
-
-### 6. Calibrate and package
-
-Ask the user to apply the atlas once to a new case or write a command for a real task. Correct the concept boundary, not just the wording. Then package the atlas for continued use and hand production back to the relevant execution Skill.
-
-Do not call the user an expert because they can repeat definitions. Completion means the user can recognize and invoke the vocabulary needed for the current question, with remaining limits visible.
-
-**Done when:** one transfer has occurred, the evidence and media are traceable, the HTML and Markdown agree, and the next unresolved branch is explicit.
-
-## Seams and tools
-
-| Seam | Upstream gives | `keywords` consumes or returns |
-|---|---|---|
-| Wayfinder -> research route | destination, decisions, open tickets, dependencies | a concrete research question and an updated frontier |
-| Research -> atlas | sources, preserved materials, provenance, failures, derived media | concept evidence, examples, uncertainty, and local asset paths |
-| Atlas source -> Viewer | question-rooted Markdown/data and local media | one generated HTML page; no hand-edited semantic content |
-| Atlas -> execution Skill | tested terms, distinctions, examples, command translations | a compact context pointer or Wiki path; production remains elsewhere |
-
-Use `scripts/build_viewer.py` to inject atlas JSON into the reusable Viewer. Use `scripts/validate_atlas.py` before opening or publishing the page. The scripts check mechanical integrity; they cannot prove that a term is genuinely useful or that a visual example teaches the intended distinction.
-
-## Output shape
-
-Each completed atlas should contain, at minimum:
+## 四、标准工作流程
 
 ```text
-<atlas>/
-├── index.md              # question-rooted map and retrieval entry point
-├── concepts/             # one Markdown page per important concept/keyword
-├── sources.md             # provenance, uncertainty, and failures
-├── media/                # local-first images, clips, frame strips, diagrams
-├── atlas.json             # generated Viewer input, not the authoring truth
-└── viewer.html            # generated from the reusable shell
+1. 边界聚焦 (Wayfinder) -> 2. 真实调研 (Research) -> 3. 提炼杠杆词与槽位 -> 4. 匹配最佳可视化 -> 5. 编译交付
 ```
 
-The exact folder can vary, but the two views must remain aligned: a term visible in HTML must be findable by name in Markdown, and a promoted leverage word must have an observable example or an explicit missing-media note.
+1. **边界聚焦 (`wayfinder`)**：明确目标场景（如“视频剪辑中的 HTML 动效词”、“B端界面的排版布局词”），梳理出 3~5 个主分支；
+2. **证据调研 (`research`)**：收集一手权威案例、术语出处与参数事实；
+3. **词汇提炼**：
+   * 提炼中英文标签（Label）；
+   * 一句话本质（Why it matters）；
+   * 与易混淆词的清晰界限（Distinction）；
+   * 标准调度指令与参数槽位（Prompt & Slots）；
+4. **可视化装配**：由模型根据概念属性自主决定配动效代码、图片示例或结构图；
+5. **编译产出**：通过内置工具链编译为单文件思维导图看板。
 
-## Boundaries
+---
 
-- Do not build a complete professional curriculum.
-- Do not turn a word list into a knowledge graph by adding arbitrary links.
-- Do not treat a polished viewer as evidence that the concepts are correct.
-- Do not use a term only because it sounds sophisticated.
-- Do not replace original sources with model summaries.
-- Do not silently make a disputed interpretation look like consensus.
-- Do not mutate a production Skill from one unverified candidate term.
+## 五、交付物与工具链
 
-## Validation
-
-Run the mechanical checks:
-
-```bash
-python3 scripts/validate_atlas.py <atlas.json>
-python3 scripts/build_viewer.py <atlas.json> --output <viewer.html>
+### 交付文件结构
+```text
+<atlas-folder>/
+├── index.md              # 知识图谱总览与快速检索索引 (供 AI/人 grep)
+├── media/                # 本地静态图片或资源 (如有)
+├── atlas.json            # 结构化数据源 (供 Viewer 消费)
+└── viewer.html           # 编译生成的单文件交互式思维导图
 ```
 
-Then perform the semantic checks:
+### 工具命令
+无需编写前端代码，系统已内置开箱即用的默认工程工具：
 
-- Can a first-time reader explain what a selected concept looks or sounds like?
-- Can they distinguish it from its nearest neighbor?
-- Can they use it in a real instruction?
-- Does the page show the relation that matters, rather than only the label?
-- Do local media, source links, and uncertainty states remain honest?
-- Does a new case expose a missing branch or a false distinction?
+1. **数据自检**：
+   ```bash
+   python3 scripts/validate_atlas.py <path/to/atlas.json>
+   ```
+   *轻量检查基础 JSON 格式与 ID 唯一性，给出温和提示，不强行阻断。*
 
-## Run-time improvement
-
-Keep one-off discoveries in the atlas. Add a candidate to `GOTCHAS.md` only when the same failure is observed again or causes costly rework. Promote an accepted change into the relevant section of this Skill or its references, remove the superseded rule, and record the change in `references/maintenance-history.md`.
+2. **一键编译可视化看板**：
+   ```bash
+   python3 scripts/build_viewer.py <path/to/atlas.json> --output <path/to/viewer.html>
+   ```
+   *自动将数据注入默认的思维导图与右侧详情 Inspector 抽屉组件中。*

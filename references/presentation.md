@@ -15,12 +15,16 @@ Use the least elaborate representation that makes the intended difference obviou
 
 ## Viewer requirements
 
-- The question and current branch are visible immediately.
-- Selecting a node preserves the map and opens the detail beside it.
-- Relations have names; a line without a meaning is noise.
-- Media has a local path or an explicit unavailable state.
-- Source and uncertainty stay reachable without dominating the first view.
-- The page works with keyboard navigation and readable mobile layout.
+- The atlas renders as an interactive, zoomable, draggable mindmap tree powered by SVG/D3 layout.
+- The UI follows DSH design tokens (`/*__DSH_TOKENS__*/` inlined from `planners-review-core`) and supports both dark and light modes.
+- The template maintains a bare `{{REVIEW_BRIDGE}}` placeholder to run both in the DSH sidebar iframe and in standalone browsers.
+- Clicking a node opens an inspection slide-over drawer:
+  - Motion concepts render a live HTML/CSS sandbox with a replay controller;
+  - Style/image concepts render high-fidelity galleries/images;
+  - Diagrams render vector overlays;
+  - Every concept features an actionable one-click Prompt box.
+- The interface strictly follows DSH technical minimalism: no unnecessary engineering logs or audit dumps in the primary view.
+- The page works with keyboard navigation and responsive layout.
 - The page remains useful if a media file is missing.
 
-The Viewer is a tool. Improve its layout once, then feed new atlas data into it. Do not redesign the page for every domain unless the domain's medium makes the shared interaction inadequate.
+The Viewer is a shared tool. Keep its layout robust and feed new atlas data into it.
