@@ -104,3 +104,12 @@
   - Added global window keydown listener so arrow navigation works immediately without requiring manual focus on a node pill.
 - Validation: validated JS syntax with Node, rebuilt viewers for `ppt-layout` and `video-motion`, and verified multi-runtime sync.
 
+## 2026-10-16: Open-Source Packaging & Self-Contained Token Mirror
+
+- Trigger: the public repo had no LICENSE/NOTICE/TRADEMARK/COMMERCIAL, and a standalone clone could not build a viewer at all — `build_viewer.py` hard-errored when `planners-review-core/assets/dsh-tokens.css` was unreachable (267 `var(--dsw-*)` references in the template make a token-less page visibly broken, so silent degradation was not an option).
+- Changes:
+  - Added `LICENSE` (AGPL-3.0), `NOTICE`, `TRADEMARK.md`, `COMMERCIAL.md`, `.gitignore`, `THIRD_PARTY_NOTICES.md`, a provenance block in `SKILL.md`, and README sections for install/attribution.
+  - Vendored a byte-identical mirror of the token sheet at `assets/dsh-tokens.css` (+ `assets/dsh-tokens.LICENSE.txt`, MIT, DeepSeek), deliberately making this Skill the one documented exception to review-core's "no second copy" rule.
+  - `build_viewer.py` now prefers the mirror, falls back to the canonical copies, prints which sheet it used, and warns on stderr when mirror and canonical have drifted apart. Missing-token error text and `references/presentation.md` updated to match.
+- Validation: standalone simulation (`HOME` outside the runtimes, skill copied to `/tmp`) builds successfully and inlines the mirror; drift warning verified with a mutated mirror; monorepo build resolves the mirror; fixture validation unchanged.
+

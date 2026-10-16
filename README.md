@@ -119,13 +119,17 @@ npx skills add https://github.com/thePlannerIvan/keywords --skill keywords
 git clone https://github.com/thePlannerIvan/keywords.git ~/.claude/skills/keywords
 ```
 
-两个脚本只用 `python3` 标准库，无需安装依赖。但 `build_viewer.py` 需要把 `planners-review-core` 的 DSH 设计令牌（`assets/dsh-tokens.css`）内联进页面，找不到会直接报错；单独使用本 Skill 时请一并安装：
+两个脚本只用 `python3` 标准库，无需安装依赖。`build_viewer.py` 会把 DSH 设计令牌内联进页面（模板里有 267 处 `var(--dsw-*)` 引用，缺了整页会走形），所以令牌表随本仓库发了一份字节级镜像 `assets/dsh-tokens.css` —— **单独克隆就能出图，不需要额外安装 `planners-review-core`**。
+
+镜像的上游是 `planners-review-core/assets/dsh-tokens.css`（抽自 DSH 发行版 0.2.0-rc.2，MIT，许可见 [assets/dsh-tokens.LICENSE.txt](assets/dsh-tokens.LICENSE.txt)）。构建时会打印实际用的是哪一份；两份同时存在且内容不一致时，会直接告警提醒同步：
 
 ```bash
-npx skills add https://github.com/thePlannerIvan/planners-review-core --skill planners-review-core
+# 在 monorepo 内重新同步镜像（上游重跑 vendor_dsh_tokens.py 之后也要跑一次）
+cp 00-system/planners-review-core/assets/dsh-tokens.{css,LICENSE.txt} \
+   06-agent-productivity/keywords/assets/
 ```
 
-只做数据契约校验的话不需要它——`validate_atlas.py` 可独立运行。
+`validate_atlas.py` 不依赖令牌表，可完全独立运行。
 
 ### 典型调用指令
 
@@ -147,11 +151,14 @@ keywords/
 ├── NOTICE                  # 作者与来源归属
 ├── TRADEMARK.md            # 名称使用边界
 ├── COMMERCIAL.md           # 合作与授权入口
+├── THIRD_PARTY_NOTICES.md  # 第三方组件与许可（DSH 设计令牌，MIT）
 ├── .gitignore              # 缓存、环境与产物忽略规则
 ├── agents/
 │   └── openai.yaml         # Agent 界面元数据声明
 ├── assets/
-│   └── keywords-viewer.html # 离线单文件思维导图骨架模板
+│   ├── keywords-viewer.html # 离线单文件思维导图骨架模板
+│   ├── dsh-tokens.css      # DSH 设计令牌镜像（勿手改，来自 planners-review-core）
+│   └── dsh-tokens.LICENSE.txt # 上述令牌的 MIT 许可全文
 ├── evals/
 │   ├── evals.json          # 评测用例集
 │   └── fixtures/           # 样例数据（如 Bento Grid 图谱）
@@ -170,6 +177,6 @@ keywords/
 
 ## 开源与归属
 
-许可文本见 [LICENSE](LICENSE)（AGPL-3.0，允许商业使用；修改版与网络服务需公开对应源码）。作者和来源见 [NOTICE](NOTICE)，名称使用边界见 [TRADEMARK.md](TRADEMARK.md)，合作与授权入口见 [COMMERCIAL.md](COMMERCIAL.md)。
+许可文本见 [LICENSE](LICENSE)（AGPL-3.0，允许商业使用；修改版与网络服务需公开对应源码）。作者和来源见 [NOTICE](NOTICE)，名称使用边界见 [TRADEMARK.md](TRADEMARK.md)，合作与授权入口见 [COMMERCIAL.md](COMMERCIAL.md)，随仓库分发的第三方内容（DSH 设计令牌，MIT / DeepSeek）见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 署名用于仓库文档与工作过程页面；生成的图谱、`viewer.html` 等交付物默认不带项目品牌信息，除非使用者明确要求。

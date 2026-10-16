@@ -16,7 +16,8 @@ Use the least elaborate representation that makes the intended difference obviou
 ## Viewer requirements
 
 - The atlas renders as an interactive, zoomable, draggable mindmap tree powered by SVG/D3 layout.
-- The UI follows DSH design tokens (`/*__DSH_TOKENS__*/` inlined from `planners-review-core`) and supports both dark and light modes.
+- The UI follows DSH design tokens (`/*__DSH_TOKENS__*/`, resolved by `build_viewer.py`) and supports both dark and light modes.
+- The sheet resolves from the byte-identical mirror shipped in `assets/dsh-tokens.css`, so a standalone clone builds without `planners-review-core`; when a canonical copy is also reachable, the builder warns if the two have drifted apart.
 - The template maintains a bare `{{REVIEW_BRIDGE}}` placeholder to run both in the DSH sidebar iframe and in standalone browsers.
 - Clicking a node opens an inspection slide-over drawer:
   - The inspector stage provides an adaptive display container calibrated to a 360px base width, expanding naturally in height (up to ~380px max height);

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 
@@ -34,11 +35,17 @@ def main() -> int:
     # must not render the unresolved marker as visible text.
     template = template.replace(bridge_marker, "")
 
-    # Inline DSH design tokens if available
+    # Inline DSH design tokens.
+    #
+    # The sheet resolves from the byte-identical mirror shipped in this repo
+    # (assets/dsh-tokens.css), so a standalone clone builds pages without
+    # planners-review-core installed. The canonical copy stays the source of
+    # truth: when one is reachable too, drift between the two is reported.
     token_placeholder = "/*__DSH_TOKENS__*/"
     if token_placeholder in template:
-        # Search for canonical dsh-tokens.css in planners-review-core
-        candidate_paths = [
+        mirror = Path(__file__).resolve().parents[1] / "assets" / "dsh-tokens.css"
+        # Canonical copies, in resolution order.
+        canonical_paths = [
             # 1. Monorepo source tree (02-skills-library/06-agent-productivity/keywords/scripts/ -> parents[3] is 02-skills-library)
             Path(__file__).resolve().parents[3] / "00-system" / "planners-review-core" / "assets" / "dsh-tokens.css",
             # 2. Installed runtime skill sibling (e.g. ~/.claude/skills/keywords/scripts/ -> parents[2] is ~/.claude/skills)
@@ -50,21 +57,29 @@ def main() -> int:
             # 4. Workspace / CWD fallback
             Path("02-skills-library/00-system/planners-review-core/assets/dsh-tokens.css").resolve(),
         ]
-        sheet_text = ""
-        for p in candidate_paths:
-            if p.is_file():
-                sheet_text = p.read_text(encoding="utf-8")
-                break
-        if sheet_text:
-            template = template.replace(
-                token_placeholder,
-                f"/*===DSH_TOKENS_BEGIN===*/\n{sheet_text.rstrip()}\n/*===DSH_TOKENS_END===*/",
-            )
+        canonical = next((p for p in canonical_paths if p.is_file()), None)
+        if mirror.is_file():
+            sheet_path = mirror
+            if canonical is not None and canonical.read_bytes() != mirror.read_bytes():
+                print(
+                    "warning: assets/dsh-tokens.css has drifted from "
+                    f"{canonical} — re-sync the mirror from planners-review-core",
+                    file=sys.stderr,
+                )
+        elif canonical is not None:
+            sheet_path = canonical
         else:
             raise SystemExit(
-                "Error: planners-review-core/assets/dsh-tokens.css not found. "
-                "Ensure planners-review-core is available in the skills library or runtimes."
+                "Error: dsh-tokens.css not found. Expected the bundled mirror at "
+                f"{mirror}, or a copy under planners-review-core in the skills "
+                "library or agent runtimes."
             )
+        print(f"tokens: {sheet_path}")
+        sheet_text = sheet_path.read_text(encoding="utf-8")
+        template = template.replace(
+            token_placeholder,
+            f"/*===DSH_TOKENS_BEGIN===*/\n{sheet_text.rstrip()}\n/*===DSH_TOKENS_END===*/",
+        )
 
     # Keep user-provided concept text from terminating the script tag.
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
