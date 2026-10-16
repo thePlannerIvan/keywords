@@ -43,6 +43,8 @@ $$\text{专业调度指令} = \text{核心杠杆词 (Anchor)} + \text{2~3 个不
 2. **一手调研 (`/research`)**：
    深入行业奠基著作（如设计学派 Nancy Duarte、Edward Tufte；排版学派 Robin Williams 等）、业界标杆工程与权威规范。每一个名词必须外部锚定，中英名成对出自权威一手来源，杜绝凭空造词。
 
+> **前置依赖与出处**：`wayfinder` 与 `research` 是外部 Skill，**不随本仓库分发**。二者来自 [Matt Pocock 的开源 Skill 集](https://github.com/mattpocock/skills)（MIT，Copyright (c) 2026 Matt Pocock）；本仓库只调用它们，不包含其任何内容。环境里没有这两个 Skill 时，用等价的领域建图与一手取证流程完成同样两步再进入图谱构建——**可以换实现，不许跳过**。
+
 ---
 
 ## 可视化呈现哲学：360px 基准视口与比例自适应

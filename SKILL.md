@@ -43,6 +43,8 @@ $$\text{专业调度指令} = \text{核心杠杆词 (Anchor)} + \text{2~3 个不
 
 **铁律：严禁跳步臆造。构建任何领域的杠杆词图谱，必须首先强制顺序执行 `/wayfinder` 与 `/research`。这两步能带来确定性的正向收益，是图谱质量与专业深度的唯一物理地基。**
 
+> **依赖说明**：`wayfinder` 与 `research` 是外部前置 Skill，**不在本 Skill 内分发**（来自 [Matt Pocock 的开源 Skill 集](https://github.com/mattpocock/skills)，MIT，Copyright (c) 2026 Matt Pocock）。环境里没有它们时，用等价的领域建图与一手取证流程完成同样两步——**可以换实现，不许跳过**。
+
 1. **必须首先调用 `/wayfinder`（迷雾导航与认知建图）**：
    * 面对一个陌生领域，绝不盲目收集碎片词汇。
    * 必须先用 `wayfinder` 探明领域骨架、梳理认知边界、辨析主要流派与核心决策分歧。
