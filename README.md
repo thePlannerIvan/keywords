@@ -4,6 +4,8 @@
 
 作者：阿祖不看 TVC  ·  小红书同名账号  ·  [demyth.info](https://demyth.info)  ·  `Lawyif@163.com`
 
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
+
 ---
 
 ## 为什么需要 Keywords？底层理论与认知痛点
@@ -105,12 +107,25 @@ $$\text{专业调度指令} = \text{核心杠杆词 (Anchor)} + \text{2~3 个不
 
 ### 安装至各 Agent Runtime
 
-克隆到支持 Skill 的 Agent 目录：
+推荐用 skills CLI 安装：
 
 ```bash
-# Claude Code / Codex
+npx skills add https://github.com/thePlannerIvan/keywords --skill keywords
+```
+
+也可以克隆到支持 Skill 的 Agent 目录（以下为 Claude Code）：
+
+```bash
 git clone https://github.com/thePlannerIvan/keywords.git ~/.claude/skills/keywords
 ```
+
+两个脚本只用 `python3` 标准库，无需安装依赖。但 `build_viewer.py` 需要把 `planners-review-core` 的 DSH 设计令牌（`assets/dsh-tokens.css`）内联进页面，找不到会直接报错；单独使用本 Skill 时请一并安装：
+
+```bash
+npx skills add https://github.com/thePlannerIvan/planners-review-core --skill planners-review-core
+```
+
+只做数据契约校验的话不需要它——`validate_atlas.py` 可独立运行。
 
 ### 典型调用指令
 
@@ -128,6 +143,11 @@ keywords/
 ├── SKILL.md                # 核心执行规范与工作流契约
 ├── GOTCHAS.md              # 踩坑记录与反模式候选池
 ├── README.md               # 本说明文档
+├── LICENSE                 # AGPL-3.0 许可文本
+├── NOTICE                  # 作者与来源归属
+├── TRADEMARK.md            # 名称使用边界
+├── COMMERCIAL.md           # 合作与授权入口
+├── .gitignore              # 缓存、环境与产物忽略规则
 ├── agents/
 │   └── openai.yaml         # Agent 界面元数据声明
 ├── assets/
@@ -145,3 +165,11 @@ keywords/
     ├── validate_atlas.py   # 数据契约校验器
     └── build_viewer.py     # 单文件交互页面编译器
 ```
+
+---
+
+## 开源与归属
+
+许可文本见 [LICENSE](LICENSE)（AGPL-3.0，允许商业使用；修改版与网络服务需公开对应源码）。作者和来源见 [NOTICE](NOTICE)，名称使用边界见 [TRADEMARK.md](TRADEMARK.md)，合作与授权入口见 [COMMERCIAL.md](COMMERCIAL.md)。
+
+署名用于仓库文档与工作过程页面；生成的图谱、`viewer.html` 等交付物默认不带项目品牌信息，除非使用者明确要求。
