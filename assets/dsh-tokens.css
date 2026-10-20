@@ -1,8 +1,8 @@
 /* ============================================================================
  * DSH 设计令牌（vendored，勿手改）
  *
- * 抄的是**你机器上正在跑的那一版**：DeepSeek Harness 桌面端 0.2.0-rc.2。
- * 来源：该发行版里的 /lib/welcome/welcome.css（sha256 f8f1c01c820fb17777184430258e80bd）——
+ * 抄的是**你机器上正在跑的那一版**：DeepSeek Harness 桌面端 0.2.1-rc.1。
+ * 来源：该发行版里的 /lib/welcome/welcome.css（sha256 a3d2cdc5e6c2cfed28602d1dc217d4b4）——
  *       它是整个发行版里唯一带这份表的文件，明暗分块、含 darwin 变体；
  *       下面两节按选择器把 `--dsw-*` 声明抽出来，**值原样保留**。
  * 补丁：`--dsw-radius-*`（6 条）、四个运动变量（4 条）与字体栈底座
@@ -17,7 +17,7 @@
  * **别手改这个文件。** 它是副本；更新方式只有一条：
  *     python3 scripts/vendor_dsh_tokens.py
  * 手改就会漂移，而漂移两边都不会报错。**升级 DSH 之后要重跑一次** ——
- * 这一版是从 0.2.0-rc.2 抄的，装了新版它就该变。
+ * 这一版是从 0.2.1-rc.1 抄的，装了新版它就该变。
  *
  * 与整个发行版的比对：明色 383 条里 383 条与发行版逐字一致，0 条写法不同（多为 rgba 与 #RRGGBBAA）
  * ========================================================================== */
@@ -311,23 +311,23 @@ body {
   --dsw-font-markdown-small-strong-italic-line-height: 20px;
   --dsw-font-markdown-small-strong-italic-font-size: 12px;
   --dsw-font-markdown-small-strong-italic-font-style: italic;
-  --dsw-font-markdown-code: 12px/19px var(--ds-font-family-code);
+  --dsw-font-markdown-code: calc(12px + var(--dsh-code-font-delta)) / calc(19px + var(--dsh-code-font-delta)) var(--ds-font-family-code);
   --dsw-font-markdown-code-font-family: var(--ds-font-family-code);
   --dsw-font-markdown-code-font-weight: 400;
-  --dsw-font-markdown-code-line-height: 19px;
-  --dsw-font-markdown-code-font-size: 12px;
+  --dsw-font-markdown-code-line-height: calc(19px + var(--dsh-code-font-delta));
+  --dsw-font-markdown-code-font-size: calc(12px + var(--dsh-code-font-delta));
   --dsw-font-markdown-code-font-style: normal;
-  --dsw-font-markdown-code-block: 11px/19px var(--ds-font-family-code);
+  --dsw-font-markdown-code-block: var(--dsh-code-font-size, 11px) / calc(19px + var(--dsh-code-font-delta)) var(--ds-font-family-code);
   --dsw-font-markdown-code-block-font-family: var(--ds-font-family-code);
   --dsw-font-markdown-code-block-font-weight: 400;
-  --dsw-font-markdown-code-block-line-height: 19px;
-  --dsw-font-markdown-code-block-font-size: 11px;
+  --dsw-font-markdown-code-block-line-height: calc(19px + var(--dsh-code-font-delta));
+  --dsw-font-markdown-code-block-font-size: var(--dsh-code-font-size, 11px);
   --dsw-font-markdown-code-block-font-style: normal;
-  --dsw-font-markdown-code-block-small: 11px/16px var(--ds-font-family-code);
+  --dsw-font-markdown-code-block-small: var(--dsh-code-font-size, 11px) / calc(16px + var(--dsh-code-font-delta)) var(--ds-font-family-code);
   --dsw-font-markdown-code-block-small-font-family: var(--ds-font-family-code);
   --dsw-font-markdown-code-block-small-font-weight: 400;
-  --dsw-font-markdown-code-block-small-line-height: 16px;
-  --dsw-font-markdown-code-block-small-font-size: 11px;
+  --dsw-font-markdown-code-block-small-line-height: calc(16px + var(--dsh-code-font-delta));
+  --dsw-font-markdown-code-block-small-font-size: var(--dsh-code-font-size, 11px);
   --dsw-font-markdown-code-block-small-font-style: normal;
   --dsw-font-xl-24: 600 24px/32px var(--dsw-font-family);
   --dsw-font-xl-24-font-family: var(--dsw-font-family);
@@ -606,12 +606,16 @@ body[data-ds-dark-theme] {
   --dsw-linear-think-select: linear-gradient(180deg, #232325 20.19%, rgba(35, 35, 37, 0) 100%);
 }
 
-/* ===== 补丁块：welcome.css 里也没有的那几组（更上游的 deepsuite 主题 / 运动曲线） =====
+/* ===== 补丁块：welcome.css 里也没有的那几组（更上游的 deepsuite 主题 / 运动曲线 / 派生字号） =====
  * 值由本脚本从同一发行版的其它位置取出，一个都没有猜。
  */
 body {
-  --dsw-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --ds-font-family-code: "SF Mono", "JetBrains Mono", "Fira Code", Consolas, "Liberation Mono", Menlo, Courier, "PingFang SC", "Microsoft YaHei";
+  --dsw-font-family: var(--dsh-font-family-text-default);
+  --ds-font-family-code: var(--dsh-font-family-code-default);
+  --dsh-font-family-text-default: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --dsh-font-family-code-default: "SF Mono", "JetBrains Mono", "Fira Code", Consolas, "Liberation Mono", Menlo, Courier, "PingFang SC", "Microsoft YaHei";
+  --dsh-code-font-delta: calc(var(--dsh-code-font-size,11px) - 11px);
+  --dsh-code-font-size: 11px;
   --dsw-radius-xs: 4px;
   --dsw-radius-sm: 8px;
   --dsw-radius-md: 12px;

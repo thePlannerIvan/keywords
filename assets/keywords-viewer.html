@@ -83,7 +83,7 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      color: var(--dsw-alias-label-tertiary, var(--dsw-alias-label-secondary));
+      color: var(--dsw-alias-label-secondary);
       font: var(--dsw-font-xxs-12);
       white-space: nowrap;
     }
@@ -93,7 +93,7 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--dsw-alias-label-tertiary, var(--dsw-alias-label-secondary));
+      background: var(--dsw-alias-border-l2, #cbd5e1);
     }
 
     .review-status.connected {
@@ -133,7 +133,7 @@
 
     .btn-segmented.active {
       background: var(--dsw-alias-button-ghost-active-fill, var(--dsw-static-deepseek-50, rgba(65, 118, 230, 0.12)));
-      color: var(--dsw-static-deepseek-500);
+      color: #1b4db8;
       font-weight: 600;
     }
 
@@ -208,6 +208,10 @@
       cursor: pointer;
     }
 
+    foreignObject {
+      overflow: visible;
+    }
+
     /* 导图卡片：文字自适应宽度、严禁截断省略号 */
     .node-pill {
       background: var(--dsw-alias-bg-layer-1);
@@ -225,6 +229,9 @@
       user-select: none;
       -webkit-user-select: none;
       -webkit-user-drag: none;
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
     }
 
     .node-group:hover .node-pill {
@@ -255,9 +262,40 @@
     }
 
     .node-branch .node-pill {
+      border-left: 3px solid var(--dsw-static-blue-450);
+      white-space: normal;
+      padding: 7px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 3px;
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+    }
+
+    .branch-card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      width: 100%;
+    }
+
+    .branch-zh {
       font: var(--dsw-font-xs-strong-13);
       color: var(--dsw-alias-label-primary);
-      border-left: 3px solid var(--dsw-static-blue-450);
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .branch-en {
+      font: var(--dsw-font-xxs-12);
+      font-size: 11px;
+      color: var(--dsw-alias-label-secondary);
+      line-height: 1.25;
+      word-break: break-word;
+      opacity: 0.88;
     }
 
     .node-keyword .node-pill {
@@ -267,7 +305,7 @@
     .badge-keyword {
       font: var(--dsw-font-xxs-12);
       font-size: 10px;
-      color: var(--dsw-static-deepseek-500);
+      color: var(--dsw-static-deepseek-600, #285bc7);
       background: rgba(65, 118, 230, 0.1);
       padding: 1px 5px;
       border-radius: var(--dsw-radius-xs);
@@ -374,8 +412,45 @@
       color: var(--dsw-alias-label-secondary);
     }
 
+    .stepper-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid var(--dsw-alias-border-l2);
+      border-radius: var(--dsw-radius-xs);
+      padding: 4px 8px;
+      background: var(--dsw-alias-bg-layer-2);
+    }
+
+    .btn-step {
+      width: 18px;
+      height: 18px;
+      border: none;
+      background: transparent;
+      color: var(--dsw-alias-label-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      line-height: 1;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+
+    .btn-step:hover {
+      background: var(--dsw-alias-interactive-bg-hover);
+      color: var(--dsw-alias-label-primary);
+    }
+
+    .stepper-controls .node-position {
+      border: none;
+      padding: 0 4px;
+      min-height: 16px;
+    }
+
     .node-role {
-      color: var(--dsw-static-deepseek-500);
+      color: var(--dsw-static-deepseek-600, #285bc7);
       border-color: var(--dsw-static-deepseek-300, var(--dsw-alias-border-l2));
       background: var(--dsw-static-deepseek-50, transparent);
     }
@@ -389,8 +464,8 @@
     }
 
     .btn-icon-close {
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       border: 1px solid var(--dsw-alias-border-l2);
       border-radius: var(--dsw-radius-sm);
       background: var(--dsw-alias-bg-layer-1);
@@ -401,6 +476,7 @@
       justify-content: center;
       font: var(--dsw-font-xs-13);
       flex-shrink: 0;
+      transition: background 0.15s ease;
     }
 
     .btn-icon-close:hover {
@@ -466,11 +542,11 @@
     }
 
     .stage-content {
-      min-height: 190px;
+      min-height: 110px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 12px 14px;
       position: relative;
       overflow: hidden;
     }
@@ -577,7 +653,7 @@
     .command-label {
       font: var(--dsw-font-xxs-12);
       font-weight: 600;
-      color: var(--dsw-static-deepseek-500);
+      color: var(--dsw-static-deepseek-600, #285bc7);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
@@ -604,6 +680,22 @@
       line-height: 1.6;
       word-break: break-word;
       user-select: text;
+    }
+
+    .slot-token {
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 7px;
+      margin: 1px 3px;
+      background: rgba(65, 118, 230, 0.09);
+      color: #1b4db8;
+      border: 1px solid rgba(65, 118, 230, 0.35);
+      border-radius: var(--dsw-radius-xs, 4px);
+      font-weight: 600;
+      font-size: 11.5px;
+      font-family: var(--ds-font-family-code);
+      letter-spacing: -0.01em;
+      vertical-align: baseline;
     }
 
     .command-foot {
@@ -645,28 +737,48 @@
       text-decoration: underline;
     }
 
-    /* 窄屏自适应 (DSH 侧栏) */
+    /* 窄屏自适应 (DSH 侧栏 / 移动端) */
     @media (max-width: 768px) {
       header {
         height: auto;
         min-height: 48px;
         padding: 8px 12px;
         gap: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
       .header-info {
         min-width: 0;
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .header-title {
+        font-size: 14px;
+        line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
         display: block;
       }
 
       .header-sub {
-        display: block;
-        margin-top: 2px;
+        display: none;
       }
 
       .atlas-stats,
       .review-status {
         display: none;
+      }
+
+      .header-controls {
+        flex-shrink: 0;
       }
 
       .inspector-panel {
@@ -675,20 +787,75 @@
         top: 0;
         width: 100%;
         box-shadow: -4px 0 20px rgba(0, 0, 0, 0.25);
+        z-index: 30;
+      }
+
+      .btn-icon-close {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
       }
 
       .inspector-body {
         padding: 14px;
       }
+
+      .mobile-floating-bar {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 15;
+        display: flex;
+      }
+
+      .mobile-floating-bar button {
+        height: 38px;
+        padding: 0 16px;
+        border: 1px solid var(--dsw-static-deepseek-500);
+        border-radius: 19px;
+        background: var(--dsw-alias-bg-layer-1);
+        color: var(--dsw-static-deepseek-500);
+        font: var(--dsw-font-xs-strong-13);
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .mobile-floating-bar {
+        display: none !important;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
-        animation-duration: 0.001ms !important;
+        animation-duration: 0.01ms !important;
+        animation-delay: 0s !important;
         animation-iteration-count: 1 !important;
         scroll-behavior: auto !important;
-        transition-duration: 0.001ms !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
       }
+    }
+
+    /* 暗黑模式对比度修复 */
+    [data-ds-dark-theme] .btn-segmented.active {
+      background: rgba(99, 149, 249, 0.22);
+      color: #70a1ff;
+    }
+    [data-ds-dark-theme] .node-role,
+    [data-ds-dark-theme] .badge-keyword,
+    [data-ds-dark-theme] .slot-token {
+      color: #70a1ff;
+      border-color: rgba(112, 161, 255, 0.45);
+      background: rgba(112, 161, 255, 0.12);
+    }
+    [data-ds-dark-theme] .command-label {
+      color: #70a1ff;
     }
 
     /* 内置动效演示沙盒 (克制纯净，不闪眼) */
@@ -865,18 +1032,31 @@
     .demo-static .dynamic i { display: block; width: 22px; height: 22px; border-radius: 50%; background: var(--dsw-static-deepseek-500); margin: 8px auto; animation: staticFloat .9s ease-in-out infinite alternate; }
     .demo-static .reduced i { display: block; width: 22px; height: 22px; border-radius: 50%; background: var(--dsw-static-green-500); margin: 8px auto; }
     @keyframes staticFloat { to { transform: translateY(-7px) scale(1.08); } }
-    @media (prefers-reduced-motion: reduce) { .motion-demo *, .motion-demo *::before, .motion-demo *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; } }
+    @media (prefers-reduced-motion: reduce) {
+      .motion-demo *, .motion-demo *::before, .motion-demo *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0s !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
+      }
+    }
   </style>
   <script>
-    /* 明暗模式同步：暗色时施加 data-ds-dark-theme 属性 */
+    /* 明暗模式同步：暗色时施加 data-ds-dark-theme 属性，并监听系统切换 */
     (function(){
       var apply = function(){
-        if(document.body && !document.body.hasAttribute('data-ds-dark-theme')
-           && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+        if(!document.body) return;
+        if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
           document.body.setAttribute('data-ds-dark-theme', '');
+        } else {
+          document.body.removeAttribute('data-ds-dark-theme');
         }
       };
       if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', apply); } else { apply(); }
+      if(window.matchMedia){
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', apply);
+      }
     })();
   </script>
 </head>
@@ -900,10 +1080,11 @@
     <div class="header-controls">
       <span class="atlas-stats" id="atlas-stats" aria-live="polite"></span>
       <span class="review-status" id="review-status">本地预览</span>
-      <div class="btn-group">
-        <button class="btn-segmented active" id="btn-filter-all" onclick="setFilter('all')">全部</button>
-        <button class="btn-segmented" id="btn-filter-kw" onclick="setFilter('keyword')">杠杆词</button>
+      <div class="btn-group" role="group" aria-label="概念过滤">
+        <button class="btn-segmented active" id="btn-filter-all" onclick="setFilter('all')" aria-pressed="true">全部</button>
+        <button class="btn-segmented" id="btn-filter-kw" onclick="setFilter('keyword')" aria-pressed="false">杠杆词</button>
       </div>
+      <button class="dsh-btn" id="btn-export-all" onclick="exportAllPrompts()" title="批量导出所有杠杆词调度指令">导出指令</button>
       <button class="dsh-btn" onclick="resetView()">居中</button>
     </div>
   </header>
@@ -928,6 +1109,11 @@
       </div>
     </main>
 
+    <!-- 移动端悬浮详情呼出条 -->
+    <div class="mobile-floating-bar" id="mobile-floating-bar">
+      <button onclick="toggleMobileInspector(event)" id="btn-mobile-toggle">📋 查看当前词详情</button>
+    </div>
+
     <!-- 右侧 Inspector 抽屉 (端庄克制、同屏对照) -->
     <aside class="inspector-panel" id="inspector-panel">
       <div class="inspector-header">
@@ -935,11 +1121,15 @@
           <div class="ih-branch" id="ins-branch">分支</div>
           <div class="ih-meta">
             <span class="node-role" id="ins-kind">杠杆词</span>
-            <span class="node-position" id="ins-position"></span>
+            <div class="stepper-controls" id="stepper-controls">
+              <button class="btn-step" onclick="stepKeyword(-1)" title="上一个杠杆词 (快捷键 J)">‹</button>
+              <span class="node-position" id="ins-position">1 / 17</span>
+              <button class="btn-step" onclick="stepKeyword(1)" title="下一个杠杆词 (快捷键 K)">›</button>
+            </div>
           </div>
           <div class="ih-title" id="ins-title">概念详情</div>
         </div>
-        <button class="btn-icon-close" onclick="closeInspector()" title="收起检查器">✕</button>
+        <button class="btn-icon-close" onclick="closeInspector()" title="收起检查器" aria-label="收起检查器">✕</button>
       </div>
 
       <div class="inspector-body">
@@ -1065,26 +1255,71 @@
     }
     indexTree(rootNode);
 
-    // 计算字符宽度，自适应节点，绝不截断省略号
+    // 计算分支维度（支持双层中英文学术分支卡片，绝不截断省略号）
+    function measureBranchDimensions(label) {
+      const m = label.match(/^(.*?)\s*(\(.*?\))\s*$/);
+      const zh = m ? m[1].trim() : label.trim();
+      const en = m ? m[2].trim() : '';
+
+      let zhLen = 0;
+      for (let i = 0; i < zh.length; i++) {
+        zhLen += zh.charCodeAt(i) > 255 ? 14 : 7.5;
+      }
+      let enLen = 0;
+      for (let i = 0; i < en.length; i++) {
+        enLen += en.charCodeAt(i) > 255 ? 14 : 7.2;
+      }
+
+      // 若无英文副标题，走紧凑单行计算
+      if (!en) {
+        const w = Math.max(160, Math.min(320, Math.round(zhLen + 28)));
+        return { width: w, height: 36, zh, en };
+      }
+
+      // 有英文副标题，采用双层结构卡片，宽度上限 350px
+      const targetW = Math.min(350, Math.max(260, Math.round(Math.max(zhLen + 28, Math.min(enLen + 28, 340)))));
+      const innerW = targetW - 24; // 左右 padding 12px
+
+      const zhLines = Math.max(1, Math.ceil(zhLen / innerW));
+      const enLines = Math.max(1, Math.ceil(enLen / innerW));
+
+      // zh 每行约 19px，en 每行约 15px，垂直内边距 14px，间隙 4px
+      const cardH = Math.max(38, Math.round(zhLines * 19 + enLines * 15 + 4 + 14));
+      return { width: targetW, height: cardH, zh, en };
+    }
+
+    // 计算普通节点/杠杆词宽度
     function measureNodeWidth(text, isKeyword) {
       let len = 0;
       for (let i = 0; i < text.length; i++) {
         len += text.charCodeAt(i) > 255 ? 14 : 8.5;
       }
-      return Math.max(160, Math.round(len + 36 + (isKeyword ? 65 : 0)));
+      return { width: Math.max(160, Math.round(len + 36 + (isKeyword ? 65 : 0))), height: 34 };
     }
 
     // 树状布局算法：动态度量各层级最大宽度，杜绝重叠碰撞
     function layoutTree(root) {
       const LEVEL_GAP = 54;
       const SIBLING_GAP = 14;
+      const BRANCH_GAP = 28; // 分支群落间的间隔，让结构层级一目了然
 
       const depthMaxWidth = {};
       function measureSubtree(node, depth) {
         node.depth = depth;
         const isKeyword = node.kind === 'keyword';
-        node.width = node.kind === 'root' ? 240 : measureNodeWidth(node.label, isKeyword);
-        node.height = node.kind === 'root' ? 44 : 34;
+        const isBranch = node.kind === 'branch';
+        let dims;
+        if (node.kind === 'root') {
+          dims = { width: 240, height: 44 };
+        } else if (isBranch) {
+          dims = measureBranchDimensions(node.label);
+          node.zh = dims.zh;
+          node.en = dims.en;
+        } else {
+          dims = measureNodeWidth(node.label, isKeyword);
+        }
+        node.width = dims.width;
+        node.height = dims.height;
         depthMaxWidth[depth] = Math.max(depthMaxWidth[depth] || 0, node.width);
         if (node.children) {
           node.children.forEach(c => measureSubtree(c, depth + 1));
@@ -1109,7 +1344,12 @@
           node.children.forEach(c => positionSubtree(c));
           const first = node.children[0];
           const last = node.children[node.children.length - 1];
-          node.y = (first.y + last.y) / 2;
+          // 保证父节点的几何垂直中心严丝合缝对齐子节点群落的中心
+          const childrenCenterY = ((first.y + first.height / 2) + (last.y + last.height / 2)) / 2;
+          node.y = childrenCenterY - node.height / 2;
+          if (node.kind === 'branch') {
+            currentY += BRANCH_GAP;
+          }
         }
       }
       positionSubtree(root);
@@ -1152,8 +1392,8 @@
         if (isFiltered) g.style.opacity = '0.2';
 
         const fo = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-        fo.setAttribute('width', node.width + 4);
-        fo.setAttribute('height', node.height + 4);
+        fo.setAttribute('width', node.width);
+        fo.setAttribute('height', node.height);
 
         const pill = document.createElement('div');
         pill.className = 'node-pill';
@@ -1161,11 +1401,19 @@
         pill.setAttribute('tabindex', '0');
         pill.setAttribute('aria-label', node.label);
 
-        let innerHTML = `<span>${esc(node.label)}</span>`;
-        if (isKeyword) {
-          innerHTML += `<span class="badge-keyword">LEVERAGE</span>`;
+        if (node.kind === 'branch') {
+          if (node.en) {
+            pill.innerHTML = `<div class="branch-card-body"><div class="branch-zh">${esc(node.zh)}</div><div class="branch-en">${esc(node.en)}</div></div>`;
+          } else {
+            pill.innerHTML = `<div class="branch-card-body"><div class="branch-zh">${esc(node.label)}</div></div>`;
+          }
+        } else {
+          let innerHTML = `<span>${esc(node.label)}</span>`;
+          if (isKeyword) {
+            innerHTML += `<span class="badge-keyword">LEVERAGE</span>`;
+          }
+          pill.innerHTML = innerHTML;
         }
-        pill.innerHTML = innerHTML;
 
         pill.onclick = (e) => {
           e.stopPropagation();
@@ -1222,6 +1470,10 @@
       updateCanvasTransform();
     }
 
+    function getVisualNodes() {
+      return Array.from(treeNodeMap.values()).filter(n => typeof n.x === 'number' && typeof n.y === 'number');
+    }
+
     function resetView() {
       const rect = vp.getBoundingClientRect();
       const allNodes = getVisualNodes();
@@ -1243,9 +1495,16 @@
       const pad = 36;
       const contentW = maxX - minX + pad * 2;
       const contentH = maxY - minY + pad * 2;
-      const fitScale = Math.min(rect.width / contentW, rect.height / contentH);
-      scale = Math.min(Math.max(Number(fitScale.toFixed(2)), 0.4), 1.0);
-      translateX = Math.round((rect.width - (maxX - minX) * scale) / 2 - minX * scale);
+
+      // Desktop co-presence: deduct 440px inspector width if open
+      const panel = document.getElementById('inspector-panel');
+      const isMobile = window.innerWidth <= 768;
+      const inspectorW = (!isMobile && panel && !panel.classList.contains('collapsed')) ? 440 : 0;
+      const availW = Math.max(120, rect.width - inspectorW);
+
+      const fitScale = Math.min(availW / contentW, rect.height / contentH);
+      scale = Math.min(Math.max(Number(fitScale.toFixed(2)), 0.35), 1.0);
+      translateX = Math.round((availW - (maxX - minX) * scale) / 2 - minX * scale + 15);
       translateY = Math.max(20, Math.round((rect.height - (maxY - minY) * scale) / 2 - minY * scale));
       updateCanvasTransform();
     }
@@ -1255,7 +1514,7 @@
     let dragMoved = false;
 
     vp.addEventListener('pointerdown', (e) => {
-      if (e.target.closest && e.target.closest('.node-pill')) return;
+      if (e.target.closest && (e.target.closest('.node-pill') || e.target.closest('.canvas-hud') || e.target.closest('.mobile-floating-bar'))) return;
       if (e.button !== 0 && e.pointerType !== 'touch') return;
       e.preventDefault();
       dragPointerId = e.pointerId;
@@ -1301,9 +1560,73 @@
 
     function setFilter(type) {
       currentFilter = type;
-      document.getElementById('btn-filter-all').classList.toggle('active', type === 'all');
-      document.getElementById('btn-filter-kw').classList.toggle('active', type === 'keyword');
+      const btnAll = document.getElementById('btn-filter-all');
+      const btnKw = document.getElementById('btn-filter-kw');
+      if (btnAll) {
+        btnAll.classList.toggle('active', type === 'all');
+        btnAll.setAttribute('aria-pressed', type === 'all' ? 'true' : 'false');
+      }
+      if (btnKw) {
+        btnKw.classList.toggle('active', type === 'keyword');
+        btnKw.setAttribute('aria-pressed', type === 'keyword' ? 'true' : 'false');
+      }
       renderMindmap();
+    }
+
+    function stepKeyword(delta) {
+      if (!keywordNodes || keywordNodes.length === 0) return;
+      let currIdx = keywordNodes.findIndex(n => n.id === currentActiveNodeId);
+      if (currIdx < 0) currIdx = 0;
+      const nextIdx = (currIdx + delta + keywordNodes.length) % keywordNodes.length;
+      const target = keywordNodes[nextIdx];
+      if (target) {
+        selectTreeNode(target.id, { focus: true });
+        ensureNodeVisible(target);
+      }
+    }
+
+    function toggleMobileInspector() {
+      const panel = document.getElementById('inspector-panel');
+      if (panel.classList.contains('collapsed')) {
+        const targetId = currentActiveNodeId || (keywordNodes[0] && keywordNodes[0].id) || rootNode.id;
+        selectTreeNode(targetId);
+      } else {
+        closeInspector();
+      }
+    }
+
+    function exportAllPrompts() {
+      const kws = (atlas.nodes || []).filter(n => n.kind === 'keyword');
+      if (!kws.length) return;
+      const lines = [
+        `# ${atlas.title || 'Keywords Atlas'} · 调度指令清单\n`,
+        `> 核心业务问题：${atlas.question || '-'}\n`,
+        `> 共收录 ${kws.length} 个领域核心杠杆词\n`
+      ];
+      kws.forEach((kw, i) => {
+        lines.push(`### ${i + 1}. ${kw.label}`);
+        if (kw.summary) lines.push(`*本质定义*：${kw.summary}`);
+        if (kw.prompt) lines.push(`\`\`\`text\n${kw.prompt}\n\`\`\``);
+        lines.push('');
+      });
+      const blobText = lines.join('\n');
+      const btn = document.getElementById('btn-export-all');
+      const done = () => {
+        const orig = btn.textContent;
+        btn.textContent = '已复制全部';
+        setTimeout(() => { btn.textContent = orig; }, 1800);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(blobText).then(done).catch(() => {});
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = blobText;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); } finally { ta.remove(); }
+      }
     }
 
     // Inspector 侧边抽屉逻辑
@@ -1459,6 +1782,8 @@
       renderStage(node);
       document.getElementById('inspector-panel').classList.remove('collapsed');
       syncActiveVisual(node.id);
+      const mBar = document.getElementById('mobile-floating-bar');
+      if (mBar) mBar.style.display = 'none';
     }
 
     function openInspector(nodeId) {
@@ -1491,7 +1816,13 @@
         cueList.appendChild(li);
       });
 
-      document.getElementById('ins-prompt').textContent = node.prompt || '暂无可复制指令';
+      const promptEl = document.getElementById('ins-prompt');
+      if (node.prompt) {
+        const safe = esc(node.prompt);
+        promptEl.innerHTML = safe.replace(/\[(.*?)\]/g, '<span class="slot-token">[$1]</span>');
+      } else {
+        promptEl.textContent = '暂无可复制指令';
+      }
 
       let provHtml = `<strong>判定线索：</strong>${(node.cues || []).map(esc).join('、 ') || '-'}<br>`;
       if (atlas.sources && atlas.sources.length > 0) {
@@ -1504,6 +1835,8 @@
       const panel = document.getElementById('inspector-panel');
       panel.classList.remove('collapsed');
       syncActiveVisual(node.id);
+      const mBar = document.getElementById('mobile-floating-bar');
+      if (mBar) mBar.style.display = 'none';
     }
 
     function closeInspector() {
@@ -1513,10 +1846,16 @@
       activeNodeData = null;
       document.getElementById('atlas-stats').textContent = `${keywordNodes.length} 个杠杆词`;
       syncActiveVisual(null);
+      const mBar = document.getElementById('mobile-floating-bar');
+      if (mBar && window.innerWidth <= 768) {
+        mBar.style.display = 'flex';
+        const btn = document.getElementById('btn-mobile-toggle');
+        if (btn) btn.textContent = '📋 查看词详情';
+      }
     }
 
     function copyPrompt() {
-      const text = document.getElementById('ins-prompt').textContent.trim();
+      const text = (activeNodeData && activeNodeData.prompt) ? activeNodeData.prompt : document.getElementById('ins-prompt').textContent.trim();
       const btn = document.getElementById('btn-copy-prompt');
       const done = () => {
         btn.textContent = '已复制';
@@ -1601,6 +1940,18 @@
       if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName) || document.activeElement?.isContentEditable) {
         return;
       }
+      if (e.key === 'Escape') {
+        closeInspector();
+        return;
+      }
+      if (e.key === 'j' || e.key === 'J') {
+        stepKeyword(1);
+        return;
+      }
+      if (e.key === 'k' || e.key === 'K') {
+        stepKeyword(-1);
+        return;
+      }
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
         if (currentActiveNodeId) {
           e.preventDefault();
@@ -1617,9 +1968,24 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       renderMindmap();
-      // 默认打开第一个核心杠杆词进行同屏对照
+      const isMobile = window.innerWidth <= 768;
       const firstKw = (atlas.nodes || []).find(n => n.kind === 'keyword');
-      if (firstKw) openInspector(firstKw.id);
+      if (isMobile) {
+        document.getElementById('inspector-panel').classList.add('collapsed');
+        const mBar = document.getElementById('mobile-floating-bar');
+        if (mBar) mBar.style.display = 'flex';
+      }
+      if (firstKw) {
+        if (!isMobile) {
+          openInspector(firstKw.id);
+        } else {
+          currentActiveNodeId = firstKw.id;
+          activeNodeData = firstKw;
+          syncActiveVisual(firstKw.id);
+          const btn = document.getElementById('btn-mobile-toggle');
+          if (btn) btn.textContent = `📋 查看：${firstKw.label}`;
+        }
+      }
       requestAnimationFrame(() => {
         resetView();
       });

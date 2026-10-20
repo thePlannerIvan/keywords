@@ -113,3 +113,17 @@
   - `build_viewer.py` now prefers the mirror, falls back to the canonical copies, prints which sheet it used, and warns on stderr when mirror and canonical have drifted apart. Missing-token error text and `references/presentation.md` updated to match.
 - Validation: standalone simulation (`HOME` outside the runtimes, skill copied to `/tmp`) builds successfully and inlines the mirror; drift warning verified with a mutated mirror; monorepo build resolves the mirror; fixture validation unchanged.
 
+## 2026-10-20: Impeccable UI Overhaul & Academic Branch Layout
+
+- Trigger: user-driven Impeccable design & technical critique identifying runtime exception (`ReferenceError: getVisualNodes is not defined`), desktop drawer canvas occlusion, composite branch title clipping, and visual grouping needs.
+- Changes:
+  - Repaired P0 runtime bug: properly scoped `getVisualNodes()` in `keywords-viewer.html`.
+  - Desktop co-presence: `resetView()` deducts 440px inspector width when the drawer is open on desktop, preventing the tree from being hidden under the drawer.
+  - Academic branch layout: added `measureBranchDimensions()` to dynamically size composite academic branch cards (`{Chinese Title} ({Author}: {English Subtitle})`) without bottom text clipping; set `overflow: visible` on `foreignObject`.
+  - Geometric centering: in `layoutTree.positionSubtree`, aligned parent Y to `childrenCenterY - node.height / 2`, ensuring bezier connectors depart from the exact card vertical center.
+  - Visual grouping: added `BRANCH_GAP = 28px` between branch clusters to visually separate concept groups on the canvas.
+  - Interactive prompt tokens: parsed `[slot]` parameters into distinct pill tokens and added "导出指令" (Export Prompts) batch copy in the header.
+  - UI refinement: desktop drawer close button resized to 28px (mobile retains 44px); stage empty state padding tightened; synced mirrored `dsh-tokens.css` from `planners-review-core` (DSH 0.2.1-rc.1); passed WCAG AA 4.5:1 text contrast checks.
+- Validation: Chrome headless rendering, `impeccable detect` zero warnings, and verified across both `consumer-myth` and `video-motion` projects.
+
+
